@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import NominaTable from '../components/NominaTable'
 import NominaForm from '../components/NominaForm'
+import { Button, Card, MetricCard, Alert } from '../components/base'
 
 interface Nomina {
   id: string
@@ -86,34 +87,38 @@ export default function NominaPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-salsa mb-2">Nómina de Empleados</h1>
-            <p className="text-carbon text-lg">Gestión de salarios y capital social</p>
+            <h1 className="text-4xl font-bold text-primary-700 mb-2">👥 Nómina de Empleados</h1>
+            <p className="text-neutral-600 text-lg">Gestión de salarios y capital social</p>
           </div>
-          <button
+          <Button
             onClick={() => {
               setEditingId(null)
               setShowForm(!showForm)
             }}
-            className="btn-primary text-lg"
+            variant={showForm ? 'ghost' : 'primary'}
+            size="lg"
           >
             {showForm ? '✕ Cancelar' : '+ Nueva Nómina'}
-          </button>
+          </Button>
         </div>
 
         {/* Resumen */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-salsa">
-            <p className="text-sm text-gray-600 mb-2">Total Salarios Base</p>
-            <p className="text-3xl font-bold text-salsa">${totalSalarios.toFixed(2)}</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-totopo">
-            <p className="text-sm text-gray-600 mb-2">Total Neto a Pagar</p>
-            <p className="text-3xl font-bold text-totopo">${totalNeto.toFixed(2)}</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-guajillo">
-            <p className="text-sm text-gray-600 mb-2">Total Deducciones</p>
-            <p className="text-3xl font-bold text-guajillo">${totalDeducciones.toFixed(2)}</p>
-          </div>
+          <MetricCard
+            title="Total Salarios Base"
+            value={`$${totalSalarios.toFixed(2)}`}
+            variant="primary"
+          />
+          <MetricCard
+            title="Total Neto a Pagar"
+            value={`$${totalNeto.toFixed(2)}`}
+            variant="success"
+          />
+          <MetricCard
+            title="Total Deducciones"
+            value={`$${totalDeducciones.toFixed(2)}`}
+            variant="warning"
+          />
         </div>
 
         {/* Formulario */}
@@ -130,31 +135,30 @@ export default function NominaPage() {
               type="month"
               value={filterMes}
               onChange={(e) => setFilterMes(e.target.value)}
-              className="px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+              className="px-4 py-2 border-2 border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-            <button
+            <Button
               onClick={() => {
                 setFilterMes(new Date().toISOString().slice(0, 7))
                 fetchNominas()
               }}
-              className="px-4 py-2 bg-gray-300 text-carbon font-semibold rounded hover:bg-gray-400 transition"
+              variant="ghost"
             >
               Limpiar
-            </button>
+            </Button>
           </div>
         )}
 
         {/* Errores */}
         {error && (
-          <div className="mb-8 p-4 bg-guajillo text-white rounded-lg text-lg">
-            <p className="font-semibold">⚠️ {error}</p>
-            <button
-              onClick={fetchNominas}
-              className="mt-2 px-4 py-2 bg-white text-guajillo font-semibold rounded hover:bg-gray-100"
-            >
-              Reintentar
-            </button>
-          </div>
+          <Alert variant="error" title="Error" className="mb-8">
+            <div className="flex justify-between items-center">
+              <span>{error}</span>
+              <Button onClick={fetchNominas} variant="ghost" size="sm">
+                Reintentar
+              </Button>
+            </div>
+          </Alert>
         )}
 
         {/* Tabla */}
