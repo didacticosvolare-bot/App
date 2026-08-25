@@ -13,6 +13,7 @@ interface Ingrediente {
 export default function IngredientesPage() {
   const [ingredientes, setIngredientes] = useState<Ingrediente[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
@@ -22,17 +23,26 @@ export default function IngredientesPage() {
 
   async function fetchIngredientes() {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('ingredientes')
-      .select('*')
-      .order('nombre')
+    setError(null)
+    try {
+      const { data, error: dbError } = await supabase
+        .from('ingredientes')
+        .select('*')
+        .order('nombre')
+        .timeout(5000)
 
-    if (error) {
-      console.error('Error al cargar ingredientes:', error)
-    } else {
-      setIngredientes(data || [])
+      if (dbError) {
+        console.error('Error al cargar ingredientes:', dbError)
+        setError(`Error: ${dbError.message}`)
+      } else {
+        setIngredientes(data || [])
+      }
+    } catch (err) {
+      console.error('Error de conexión:', err)
+      setError('No se pudo conectar a la base de datos. Verifica tu conexión.')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   async function handleDelete(id: string) {
@@ -89,6 +99,18 @@ export default function IngredientesPage() {
         )}
 
         {/* Tabla */}
+        {error && (
+          <div className="mb-8 p-4 bg-guajillo text-white rounded-lg text-lg">
+            <p className="font-semibold">⚠️ {error}</p>
+            <button
+              onClick={fetchIngredientes}
+              className="mt-2 px-4 py-2 bg-white text-guajillo font-semibold rounded hover:bg-gray-100"
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
+
         {loading ? (
           <div className="text-center py-12">
             <p className="text-xl text-carbon">Cargando ingredientes...</p>
