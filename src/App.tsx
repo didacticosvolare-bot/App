@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Navigation from './components/Navigation'
 import IngredientesPage from './pages/IngredientesPage'
 import ProveedoresPage from './pages/ProveedoresPage'
+import EmpaquesPage from './pages/EmpaquesPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('ingredientes')
@@ -13,6 +14,7 @@ export default function App() {
       case 'proveedores':
         return <ProveedoresPage />
       case 'empaques':
+        return <EmpaquesPage />
       case 'subrecetas':
       case 'platillos':
       case 'bitacoras':
