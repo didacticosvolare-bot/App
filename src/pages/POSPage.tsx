@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { Button, Card, FormInput } from '../components/base'
 
 interface Platillo {
   id: string
@@ -18,6 +19,7 @@ export default function POSPage() {
   const [platillos, setPlatillos] = useState<Platillo[]>([])
   const [carrito, setCarrito] = useState<CarritoItem[]>([])
   const [cliente, setCliente] = useState('')
+  const [busqueda, setBusqueda] = useState('')
   const [loading, setLoading] = useState(true)
   const [procesando, setProcesando] = useState(false)
   const [categoriaFiltro, setCategoriaFiltro] = useState('todo')
@@ -131,117 +133,130 @@ export default function POSPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Productos */}
           <div className="lg:col-span-2">
-            <div className="mb-4">
-              <input
-                type="text"
-                placeholder="🔍 Buscar platillo..."
-                className="w-full px-4 py-3 border-2 border-carbon rounded-lg text-lg focus:outline-none focus:border-salsa"
-              />
-            </div>
+            <FormInput
+              label="Buscar platillo"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              placeholder="Buscar por nombre..."
+              className="mb-4"
+            />
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {platillos.map((platillo) => (
-                <button
-                  key={platillo.id}
-                  onClick={() => agregarAlCarrito(platillo)}
-                  className="p-4 bg-white rounded-lg shadow border-2 border-salsa hover:bg-nixtamal transition active:scale-95 transform"
-                >
-                  <p className="font-bold text-carbon text-sm">{platillo.nombre_platillo}</p>
-                  <p className="text-lg font-bold text-salsa mt-2">${platillo.precio_venta.toFixed(2)}</p>
-                </button>
-              ))}
+              {platillos
+                .filter((p) => p.nombre_platillo.toLowerCase().includes(busqueda.toLowerCase()))
+                .map((platillo) => (
+                  <div key={platillo.id} className="bg-white rounded-lg shadow-md border border-primary-200 p-4 hover:shadow-lg transition">
+                    <p className="font-semibold text-sm text-neutral-900 mb-2">{platillo.nombre_platillo}</p>
+                    <p className="text-lg font-bold text-primary-600 mb-3">${platillo.precio_venta.toFixed(2)}</p>
+                    <Button
+                      onClick={() => agregarAlCarrito(platillo)}
+                      variant="primary"
+                      size="sm"
+                      fullWidth
+                    >
+                      Agregar
+                    </Button>
+                  </div>
+                ))}
             </div>
           </div>
 
           {/* Carrito y Checkout */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-4 sticky top-4">
-              <h2 className="text-2xl font-oswald text-salsa mb-4">Carrito</h2>
+            <Card variant="elevated" className="sticky top-4">
+              <div className="p-6">
+                <h2 className="text-2xl font-oswald text-primary-700 mb-4">🛒 Carrito</h2>
 
-              {carrito.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">Sin items</p>
-              ) : (
-                <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
-                  {carrito.map((item) => (
-                    <div key={item.platillo_id} className="bg-nixtamal p-3 rounded-lg">
-                      <div className="flex justify-between items-start mb-2">
-                        <p className="font-bold text-carbon text-sm">{item.nombre}</p>
-                        <button
-                          onClick={() => quitarDelCarrito(item.platillo_id)}
-                          className="text-guajillo font-bold"
-                        >
-                          ✕
-                        </button>
+                {carrito.length === 0 ? (
+                  <p className="text-center text-neutral-500 py-8">Sin items</p>
+                ) : (
+                  <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
+                    {carrito.map((item) => (
+                      <div key={item.platillo_id} className="bg-neutral-50 p-3 rounded-lg border border-neutral-200">
+                        <div className="flex justify-between items-start mb-2">
+                          <p className="font-semibold text-neutral-900 text-sm">{item.nombre}</p>
+                          <button
+                            onClick={() => quitarDelCarrito(item.platillo_id)}
+                            className="text-error-600 font-bold hover:text-error-700"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                          <Button
+                            onClick={() => actualizarCantidad(item.platillo_id, item.cantidad - 1)}
+                            variant="secondary"
+                            size="sm"
+                          >
+                            −
+                          </Button>
+                          <input
+                            type="number"
+                            value={item.cantidad}
+                            onChange={(e) => actualizarCantidad(item.platillo_id, parseInt(e.target.value) || 1)}
+                            className="w-12 text-center border border-neutral-300 rounded px-2 py-1"
+                          />
+                          <Button
+                            onClick={() => actualizarCantidad(item.platillo_id, item.cantidad + 1)}
+                            variant="primary"
+                            size="sm"
+                          >
+                            +
+                          </Button>
+                          <span className="ml-auto font-bold text-primary-600 text-sm">
+                            ${(item.precio * item.cantidad).toFixed(2)}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex gap-2 items-center">
-                        <button
-                          onClick={() => actualizarCantidad(item.platillo_id, item.cantidad - 1)}
-                          className="bg-guajillo text-white px-2 py-1 rounded text-sm font-bold"
-                        >
-                          −
-                        </button>
-                        <input
-                          type="number"
-                          value={item.cantidad}
-                          onChange={(e) => actualizarCantidad(item.platillo_id, parseInt(e.target.value) || 1)}
-                          className="w-12 text-center border border-carbon rounded px-2 py-1"
-                        />
-                        <button
-                          onClick={() => actualizarCantidad(item.platillo_id, item.cantidad + 1)}
-                          className="bg-salsa text-white px-2 py-1 rounded text-sm font-bold"
-                        >
-                          +
-                        </button>
-                        <span className="ml-auto font-bold text-salsa text-sm">
-                          ${(item.precio * item.cantidad).toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
 
-              {/* Total */}
-              <div className="border-t-2 border-salsa py-4 mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-carbon">Subtotal:</p>
-                  <p className="text-xl font-bold text-salsa">${total.toFixed(2)}</p>
+                {/* Total */}
+                <div className="border-t border-neutral-200 py-4 mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-neutral-700">Subtotal:</p>
+                    <p className="text-xl font-bold text-primary-700">${total.toFixed(2)}</p>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-neutral-600">
+                    <p>{carrito.reduce((sum, item) => sum + item.cantidad, 0)} items</p>
+                    <p>IVA incl.</p>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center text-sm text-gray-600">
-                  <p>{carrito.reduce((sum, item) => sum + item.cantidad, 0)} items</p>
-                  <p>IVA incl.</p>
-                </div>
+
+                {/* Cliente */}
+                <FormInput
+                  label="Cliente (opcional)"
+                  value={cliente}
+                  onChange={(e) => setCliente(e.target.value)}
+                  placeholder="Nombre del cliente"
+                  className="mb-4"
+                />
+
+                {/* Botón Pagar */}
+                <Button
+                  onClick={registrarVenta}
+                  disabled={procesando || carrito.length === 0}
+                  variant="success"
+                  fullWidth
+                  className="mb-2"
+                >
+                  {procesando ? '⏳ Procesando...' : `💳 COBRAR $${total.toFixed(2)}`}
+                </Button>
+
+                {/* Botón Limpiar */}
+                <Button
+                  onClick={() => {
+                    setCarrito([])
+                    setCliente('')
+                  }}
+                  variant="ghost"
+                  fullWidth
+                >
+                  Limpiar
+                </Button>
               </div>
-
-              {/* Cliente */}
-              <input
-                type="text"
-                value={cliente}
-                onChange={(e) => setCliente(e.target.value)}
-                placeholder="Cliente (opcional)"
-                className="w-full px-3 py-2 border-2 border-carbon rounded-lg mb-4 text-sm focus:outline-none focus:border-salsa"
-              />
-
-              {/* Botón Pagar */}
-              <button
-                onClick={registrarVenta}
-                disabled={procesando || carrito.length === 0}
-                className="w-full py-4 bg-salsa text-white font-bold text-lg rounded-lg hover:bg-opacity-90 disabled:opacity-50 transition active:scale-95"
-              >
-                {procesando ? '⏳ Procesando...' : `💳 COBRAR $${total.toFixed(2)}`}
-              </button>
-
-              {/* Botón Limpiar */}
-              <button
-                onClick={() => {
-                  setCarrito([])
-                  setCliente('')
-                }}
-                className="w-full mt-2 py-2 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition text-sm"
-              >
-                Limpiar
-              </button>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import InventoryAlerts from '../components/InventoryAlerts'
+import { Button, Card, FormInput } from '../components/base'
 
 interface Ingrediente {
   id: string
@@ -74,12 +75,6 @@ export default function InventoryPage() {
     }
   }
 
-  const getColorStatus = (actual: number, minimo: number) => {
-    if (actual <= 0) return 'bg-red-100 text-red-700'
-    if (actual <= minimo) return 'bg-yellow-100 text-yellow-700'
-    return 'bg-green-100 text-green-700'
-  }
-
   return (
     <div className="min-h-screen bg-nixtamal p-8">
       <div className="max-w-7xl mx-auto">
@@ -92,30 +87,30 @@ export default function InventoryPage() {
 
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-xl text-carbon">Cargando...</p>
+            <p className="text-xl text-neutral-600">Cargando ingredientes...</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-            <div className="overflow-x-auto">
+          <Card variant="elevated">
+            <div className="p-6 overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b-2 border-salsa">
-                    <th className="text-left py-4 px-4 font-semibold">Ingrediente</th>
-                    <th className="text-center py-4 px-4 font-semibold">Categoría</th>
-                    <th className="text-center py-4 px-4 font-semibold">Stock</th>
-                    <th className="text-center py-4 px-4 font-semibold">Mínimo</th>
-                    <th className="text-center py-4 px-4 font-semibold">Unidad</th>
-                    <th className="text-right py-4 px-4 font-semibold">Costo Unit.</th>
-                    <th className="text-center py-4 px-4 font-semibold">Estado</th>
-                    <th className="text-center py-4 px-4 font-semibold">Acciones</th>
+                  <tr className="border-b border-neutral-200">
+                    <th className="text-left py-4 px-4 font-semibold text-neutral-900">Ingrediente</th>
+                    <th className="text-center py-4 px-4 font-semibold text-neutral-900">Categoría</th>
+                    <th className="text-center py-4 px-4 font-semibold text-neutral-900">Stock</th>
+                    <th className="text-center py-4 px-4 font-semibold text-neutral-900">Mínimo</th>
+                    <th className="text-center py-4 px-4 font-semibold text-neutral-900">Unidad</th>
+                    <th className="text-right py-4 px-4 font-semibold text-neutral-900">Costo Unit.</th>
+                    <th className="text-center py-4 px-4 font-semibold text-neutral-900">Estado</th>
+                    <th className="text-center py-4 px-4 font-semibold text-neutral-900">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {ingredientes.map((ing) => (
-                    <tr key={ing.id} className="border-b hover:bg-nixtamal transition">
-                      <td className="py-4 px-4 font-semibold text-carbon">{ing.nombre_ingrediente}</td>
+                    <tr key={ing.id} className="border-b border-neutral-100 hover:bg-neutral-50 transition">
+                      <td className="py-4 px-4 font-semibold text-neutral-900">{ing.nombre_ingrediente}</td>
                       <td className="py-4 px-4 text-center">
-                        <span className="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm">
+                        <span className="px-3 py-1 bg-neutral-200 text-neutral-700 rounded text-sm font-medium">
                           {ing.categoria}
                         </span>
                       </td>
@@ -125,51 +120,54 @@ export default function InventoryPage() {
                             type="number"
                             value={nuevoStock}
                             onChange={(e) => setNuevoStock(e.target.value)}
-                            className="w-20 px-2 py-1 border border-carbon rounded text-center"
+                            className="w-20 px-2 py-1 border border-neutral-300 rounded text-center"
                             autoFocus
                           />
                         ) : (
-                          <span className="font-bold text-lg">{ing.stock_actual}</span>
+                          <span className="font-bold text-lg text-neutral-900">{ing.stock_actual}</span>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-center">{ing.stock_minimo}</td>
-                      <td className="py-4 px-4 text-center text-sm">{ing.unidad_medida}</td>
-                      <td className="py-4 px-4 text-right font-mono">${ing.precio_costo.toFixed(2)}</td>
+                      <td className="py-4 px-4 text-center text-neutral-700">{ing.stock_minimo}</td>
+                      <td className="py-4 px-4 text-center text-sm text-neutral-700">{ing.unidad_medida}</td>
+                      <td className="py-4 px-4 text-right font-mono text-neutral-900">${ing.precio_costo.toFixed(2)}</td>
                       <td className="py-4 px-4 text-center">
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getColorStatus(ing.stock_actual, ing.stock_minimo)}`}>
-                          {ing.stock_actual <= 0
-                            ? 'AGOTADO'
-                            : ing.stock_actual <= ing.stock_minimo
-                              ? 'BAJO'
-                              : 'OK'}
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            ing.stock_actual <= 0
+                              ? 'bg-error-100 text-error-700'
+                              : ing.stock_actual <= ing.stock_minimo
+                                ? 'bg-warning-100 text-warning-700'
+                                : 'bg-success-100 text-success-700'
+                          }`}
+                        >
+                          {ing.stock_actual <= 0 ? 'AGOTADO' : ing.stock_actual <= ing.stock_minimo ? 'BAJO' : 'OK'}
                         </span>
                       </td>
                       <td className="py-4 px-4 text-center">
                         {editandoId === ing.id ? (
                           <div className="flex gap-2 justify-center">
-                            <button
+                            <Button
                               onClick={() => actualizarStock(ing.id, parseInt(nuevoStock) || 0)}
-                              className="px-3 py-1 bg-salsa text-white rounded hover:bg-opacity-90 transition text-sm font-semibold"
+                              variant="success"
+                              size="sm"
                             >
                               Guardar
-                            </button>
-                            <button
-                              onClick={() => setEditandoId(null)}
-                              className="px-3 py-1 bg-gray-400 text-white rounded text-sm font-semibold"
-                            >
+                            </Button>
+                            <Button onClick={() => setEditandoId(null)} variant="ghost" size="sm">
                               Cancelar
-                            </button>
+                            </Button>
                           </div>
                         ) : (
-                          <button
+                          <Button
                             onClick={() => {
                               setEditandoId(ing.id)
                               setNuevoStock(ing.stock_actual.toString())
                             }}
-                            className="px-3 py-1 bg-totopo text-white rounded hover:bg-opacity-90 transition text-sm font-semibold"
+                            variant="secondary"
+                            size="sm"
                           >
                             Editar
-                          </button>
+                          </Button>
                         )}
                       </td>
                     </tr>
@@ -177,7 +175,7 @@ export default function InventoryPage() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>

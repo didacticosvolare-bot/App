@@ -13,6 +13,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
+import { Button, Card, FormInput, MetricCard } from '../components/base'
 
 interface MetricasVentas {
   totalVentas: number
@@ -144,14 +145,14 @@ export default function ReportesPage() {
             type="month"
             value={filterMes}
             onChange={(e) => setFilterMes(e.target.value)}
-            className="px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+            className="px-4 py-2 border-2 border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
-          <button
+          <Button
             onClick={() => setFilterMes(new Date().toISOString().slice(0, 7))}
-            className="px-4 py-2 bg-gray-300 text-carbon font-semibold rounded hover:bg-gray-400 transition"
+            variant="secondary"
           >
             Mes Actual
-          </button>
+          </Button>
         </div>
 
         {loading ? (
@@ -161,172 +162,190 @@ export default function ReportesPage() {
         ) : (
           <>
             {/* Estado de Resultados */}
-            <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8 mb-8">
-              <h2 className="text-3xl font-oswald text-salsa mb-6">Estado de Resultados - {filterMes}</h2>
+            <Card variant="elevated" className="mb-8">
+              <div className="p-8">
+                <h2 className="text-3xl font-oswald text-primary-700 mb-6">Estado de Resultados - {filterMes}</h2>
 
-              <div className="grid grid-cols-2 gap-8">
-                {/* Ingresos */}
-                <div>
-                  <h3 className="text-xl font-bold text-carbon mb-4">INGRESOS</h3>
-                  <div className="space-y-3 bg-blue-50 p-6 rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="text-carbon">Ventas</span>
-                      <span className="font-mono font-bold text-blue-600">${metricas.totalVentas.toFixed(2)}</span>
+                <div className="grid grid-cols-2 gap-8">
+                  {/* Ingresos */}
+                  <div>
+                    <h3 className="text-xl font-bold text-neutral-900 mb-4">INGRESOS</h3>
+                    <div className="space-y-3 bg-success-50 p-6 rounded-lg border border-success-200">
+                      <div className="flex justify-between items-center">
+                        <span className="text-neutral-700">Ventas</span>
+                        <span className="font-mono font-bold text-success-600">${metricas.totalVentas.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Costos */}
+                  <div>
+                    <h3 className="text-xl font-bold text-neutral-900 mb-4">COSTOS Y GASTOS</h3>
+                    <div className="space-y-3 bg-error-50 p-6 rounded-lg border border-error-200">
+                      <div className="flex justify-between items-center border-b border-error-200 pb-2">
+                        <span className="text-neutral-700">Compras de Insumos</span>
+                        <span className="font-mono font-bold text-error-600">${totalCompras.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-error-200 pb-2">
+                        <span className="text-neutral-700">Gastos Operacionales</span>
+                        <span className="font-mono font-bold text-error-600">${totalGastos.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-error-200 pb-2">
+                        <span className="text-neutral-700">Nómina</span>
+                        <span className="font-mono font-bold text-error-600">${totalNomina.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 font-bold">
+                        <span className="text-neutral-700">Total Costos</span>
+                        <span className="font-mono text-error-600">${(totalCompras + totalGastos + totalNomina).toFixed(2)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Costos */}
-                <div>
-                  <h3 className="text-xl font-bold text-carbon mb-4">COSTOS Y GASTOS</h3>
-                  <div className="space-y-3 bg-red-50 p-6 rounded-lg">
-                    <div className="flex justify-between items-center border-b pb-2">
-                      <span className="text-carbon">Compras de Insumos</span>
-                      <span className="font-mono font-bold text-red-600">${totalCompras.toFixed(2)}</span>
+                {/* Utilidad */}
+                <div className="mt-8 pt-8 border-t border-primary-200">
+                  <div className={`rounded-lg p-6 border-2 ${utilidad >= 0 ? 'bg-success-50 border-success-300' : 'bg-error-50 border-error-300'}`}>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-2xl font-bold text-neutral-900">UTILIDAD NETA</span>
+                      <span className={`text-4xl font-bold ${utilidad >= 0 ? 'text-success-600' : 'text-error-600'}`}>
+                        ${utilidad.toFixed(2)}
+                      </span>
                     </div>
-                    <div className="flex justify-between items-center border-b pb-2">
-                      <span className="text-carbon">Gastos Operacionales</span>
-                      <span className="font-mono font-bold text-red-600">${totalGastos.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b pb-2">
-                      <span className="text-carbon">Nómina</span>
-                      <span className="font-mono font-bold text-red-600">${totalNomina.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between items-center pt-2 font-bold">
-                      <span className="text-carbon">Total Costos</span>
-                      <span className="font-mono text-red-600">${(totalCompras + totalGastos + totalNomina).toFixed(2)}</span>
+                    <div className="text-right text-sm text-neutral-600">
+                      Margen: <span className="font-bold text-neutral-900">{margenUtilidad}%</span>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Utilidad */}
-              <div className="mt-8 pt-8 border-t-2 border-salsa">
-                <div className="bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-400 rounded-lg p-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-2xl font-bold text-carbon">UTILIDAD NETA</span>
-                    <span className={`text-4xl font-bold ${utilidad >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      ${utilidad.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="text-right text-sm text-gray-600">
-                    Margen: <span className="font-bold text-carbon">{margenUtilidad}%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            </Card>
 
             {/* Punto de Equilibrio */}
             <div className="grid grid-cols-2 gap-8 mb-8">
-              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-                <h3 className="text-2xl font-oswald text-salsa mb-6">Punto de Equilibrio</h3>
-                <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6">
-                  <p className="text-center text-gray-600 mb-4">
-                    Unidades necesarias para cubrir costos
-                  </p>
-                  <div className="text-center">
-                    <p className="text-5xl font-bold text-yellow-600">{puntosEquilibrio}</p>
-                    <p className="text-sm text-carbon mt-2">
-                      unidades a ${metricas.precioPromedio.toFixed(2)} c/u
+              <Card variant="elevated">
+                <div className="p-8">
+                  <h3 className="text-2xl font-oswald text-primary-700 mb-6">Punto de Equilibrio</h3>
+                  <div className="bg-warning-50 border-2 border-warning-300 rounded-lg p-6">
+                    <p className="text-center text-neutral-600 mb-4">
+                      Unidades necesarias para cubrir costos
                     </p>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-yellow-300">
-                    <p className="text-sm text-carbon">
-                      Precio promedio venta: <strong>${metricas.precioPromedio.toFixed(2)}</strong>
-                    </p>
-                    <p className="text-sm text-carbon">
-                      Costo fijo mensual: <strong>${(totalGastos + totalCompras + totalNomina).toFixed(2)}</strong>
-                    </p>
+                    <div className="text-center">
+                      <p className="text-5xl font-bold text-warning-600">{puntosEquilibrio}</p>
+                      <p className="text-sm text-neutral-700 mt-2">
+                        unidades a ${metricas.precioPromedio.toFixed(2)} c/u
+                      </p>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-warning-200">
+                      <p className="text-sm text-neutral-700">
+                        Precio promedio venta: <strong>${metricas.precioPromedio.toFixed(2)}</strong>
+                      </p>
+                      <p className="text-sm text-neutral-700">
+                        Costo fijo mensual: <strong>${(totalGastos + totalCompras + totalNomina).toFixed(2)}</strong>
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Card>
 
               {/* Resumen Ventas */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-                <h3 className="text-2xl font-oswald text-salsa mb-6">Resumen de Ventas</h3>
-                <div className="space-y-4">
-                  <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded">
-                    <p className="text-sm text-gray-600">Total Ingresos</p>
-                    <p className="text-3xl font-bold text-green-600">${metricas.totalVentas.toFixed(2)}</p>
-                  </div>
-                  <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
-                    <p className="text-sm text-gray-600">Unidades Vendidas</p>
-                    <p className="text-3xl font-bold text-blue-600">{metricas.totalUnidades}</p>
-                  </div>
-                  <div className="bg-purple-50 border-l-4 border-purple-400 p-4 rounded">
-                    <p className="text-sm text-gray-600">Precio Promedio</p>
-                    <p className="text-3xl font-bold text-purple-600">${metricas.precioPromedio.toFixed(2)}</p>
+              <Card variant="elevated">
+                <div className="p-8">
+                  <h3 className="text-2xl font-oswald text-primary-700 mb-6">Resumen de Ventas</h3>
+                  <div className="space-y-4">
+                    <MetricCard
+                      title="Total Ingresos"
+                      value={`$${metricas.totalVentas.toFixed(2)}`}
+                      variant="success"
+                    />
+                    <MetricCard
+                      title="Unidades Vendidas"
+                      value={metricas.totalUnidades.toString()}
+                      variant="primary"
+                    />
+                    <MetricCard
+                      title="Precio Promedio"
+                      value={`$${metricas.precioPromedio.toFixed(2)}`}
+                      variant="secondary"
+                    />
                   </div>
                 </div>
-              </div>
+              </Card>
             </div>
 
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Pie Chart - Desglose de Costos */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-                <h3 className="text-2xl font-oswald text-salsa mb-6">📊 Desglose de Costos</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: 'Compras', value: totalCompras },
-                        { name: 'Gastos', value: totalGastos },
-                        { name: 'Nómina', value: totalNomina },
-                      ]}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      <Cell fill="#4A6741" />
-                      <Cell fill="#D4A24C" />
-                      <Cell fill="#C1440E" />
-                    </Pie>
-                    <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+              <Card variant="elevated">
+                <div className="p-8">
+                  <h3 className="text-2xl font-oswald text-primary-700 mb-6">📊 Desglose de Costos</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Compras', value: totalCompras },
+                          { name: 'Gastos', value: totalGastos },
+                          { name: 'Nómina', value: totalNomina },
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        <Cell fill="#059669" />
+                        <Cell fill="#f59e0b" />
+                        <Cell fill="#dc2626" />
+                      </Pie>
+                      <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
 
               {/* Bar Chart - Top Productos */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-                <h3 className="text-2xl font-oswald text-salsa mb-6">🥘 Top Productos por Ingreso</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={Object.entries(metricas.ingresosPorPlatillo).slice(0, 5).map(([id, ingreso]) => ({
-                    name: id,
-                    ingreso,
-                  }))}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
-                    <YAxis />
-                    <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
-                    <Bar dataKey="ingreso" fill="#4A6741" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <Card variant="elevated">
+                <div className="p-8">
+                  <h3 className="text-2xl font-oswald text-primary-700 mb-6">🥘 Top Productos por Ingreso</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={Object.entries(metricas.ingresosPorPlatillo).slice(0, 5).map(([id, ingreso]) => ({
+                      name: id,
+                      ingreso,
+                    }))}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
+                      <YAxis />
+                      <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                      <Bar dataKey="ingreso" fill="#0ea5e9" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
             </div>
 
             {/* Platillo Más Vendido */}
-            <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-              <h3 className="text-2xl font-oswald text-salsa mb-6">Desempeño por Platillo</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-salsa text-white rounded-lg p-6 text-center">
-                  <p className="text-sm mb-2">Platillo Más Vendido</p>
-                  <p className="text-2xl font-bold">{metricas.platilloMasVendido}</p>
-                </div>
-                <div className="bg-totopo text-white rounded-lg p-6 text-center">
-                  <p className="text-sm mb-2">Total de Platillos Únicos</p>
-                  <p className="text-2xl font-bold">{Object.keys(metricas.ingresosPorPlatillo).length}</p>
-                </div>
-                <div className="bg-guajillo text-white rounded-lg p-6 text-center">
-                  <p className="text-sm mb-2">Período</p>
-                  <p className="text-2xl font-bold">{filterMes}</p>
+            <Card variant="elevated">
+              <div className="p-8">
+                <h3 className="text-2xl font-oswald text-primary-700 mb-6">Desempeño por Platillo</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <MetricCard
+                    title="Platillo Más Vendido"
+                    value={metricas.platilloMasVendido}
+                    variant="primary"
+                  />
+                  <MetricCard
+                    title="Total de Platillos Únicos"
+                    value={Object.keys(metricas.ingresosPorPlatillo).length.toString()}
+                    variant="secondary"
+                  />
+                  <MetricCard
+                    title="Período"
+                    value={filterMes}
+                    variant="warning"
+                  />
                 </div>
               </div>
-            </div>
+            </Card>
           </>
         )}
       </div>
