@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import {
+  PieChart,
+  Pie,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts'
 
 interface MetricasVentas {
   totalVentas: number
@@ -245,6 +258,54 @@ export default function ReportesPage() {
                     <p className="text-3xl font-bold text-purple-600">${metricas.precioPromedio.toFixed(2)}</p>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {/* Pie Chart - Desglose de Costos */}
+              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
+                <h3 className="text-2xl font-oswald text-salsa mb-6">📊 Desglose de Costos</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: 'Compras', value: totalCompras },
+                        { name: 'Gastos', value: totalGastos },
+                        { name: 'Nómina', value: totalNomina },
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      <Cell fill="#4A6741" />
+                      <Cell fill="#D4A24C" />
+                      <Cell fill="#C1440E" />
+                    </Pie>
+                    <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Bar Chart - Top Productos */}
+              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
+                <h3 className="text-2xl font-oswald text-salsa mb-6">🥘 Top Productos por Ingreso</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={Object.entries(metricas.ingresosPorPlatillo).slice(0, 5).map(([id, ingreso]) => ({
+                    name: id,
+                    ingreso,
+                  }))}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
+                    <YAxis />
+                    <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                    <Bar dataKey="ingreso" fill="#4A6741" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
 

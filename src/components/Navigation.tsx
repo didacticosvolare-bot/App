@@ -10,6 +10,7 @@ export default function Navigation({ currentPage, onNavigate }: Props) {
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📱' },
+    { id: 'pos', label: 'POS', icon: '🛒' },
     { id: 'ingredientes', label: 'Ingredientes', icon: '🥕' },
     { id: 'proveedores', label: 'Proveedores', icon: '🏪' },
     { id: 'empaques', label: 'Empaques', icon: '📦' },
