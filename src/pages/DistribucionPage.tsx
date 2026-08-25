@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { MetricCard, Card, CardHeader, CardTitle, CardContent, Button, FormInput } from '../components/base'
 
 interface Distribucion {
   mes: string
@@ -131,19 +132,20 @@ export default function DistribucionPage() {
           <p className="text-carbon text-lg">División de ganancias entre Daniela, Carlos y Erick (33.33% c/u)</p>
         </div>
 
-        <div className="mb-6 flex gap-4 items-center">
-          <input
+        <div className="mb-6 flex gap-4 items-end">
+          <FormInput
+            label="Período"
             type="month"
             value={mesSeleccionado}
             onChange={(e) => setMesSeleccionado(e.target.value)}
-            className="px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
           />
-          <button
+          <Button
+            variant="primary"
+            size="lg"
             onClick={calcularDistribucion}
-            className="px-6 py-2 bg-salsa text-white font-semibold rounded-lg hover:bg-opacity-90 transition"
           >
             📊 Calcular Distribución
-          </button>
+          </Button>
         </div>
 
         {loading ? (
@@ -153,142 +155,158 @@ export default function DistribucionPage() {
         ) : distribucionActual ? (
           <div className="space-y-8">
             {/* Resumen Financiero */}
-            <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-              <h2 className="text-3xl font-oswald text-salsa mb-6">Resumen Financiero - {mesSeleccionado}</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-green-50 border-l-4 border-green-400 p-6 rounded">
-                  <p className="text-sm text-gray-600">Total Ventas</p>
-                  <p className="text-3xl font-bold text-green-600">${distribucionActual.total_ventas.toFixed(2)}</p>
+            <Card variant="elevated">
+              <CardHeader>
+                <CardTitle>Resumen Financiero - {mesSeleccionado}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <MetricCard
+                    title="Total Ventas"
+                    value={`$${distribucionActual.total_ventas.toFixed(2)}`}
+                    color="success"
+                    icon="💰"
+                  />
+                  <MetricCard
+                    title="Total Costos"
+                    value={`$${distribucionActual.total_costos.toFixed(2)}`}
+                    color="error"
+                    icon="💸"
+                  />
+                  <MetricCard
+                    title="Ganancia Neta"
+                    value={`$${distribucionActual.total_ganancia.toFixed(2)}`}
+                    color="primary"
+                    icon="💵"
+                  />
+                  <MetricCard
+                    title="Margen"
+                    value={`${distribucionActual.total_ventas > 0 ? ((distribucionActual.total_ganancia / distribucionActual.total_ventas) * 100).toFixed(1) : 0}%`}
+                    color="warning"
+                    icon="📊"
+                  />
                 </div>
-                <div className="bg-red-50 border-l-4 border-red-400 p-6 rounded">
-                  <p className="text-sm text-gray-600">Total Costos</p>
-                  <p className="text-3xl font-bold text-red-600">${distribucionActual.total_costos.toFixed(2)}</p>
-                </div>
-                <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
-                  <p className="text-sm text-gray-600">Ganancia Neta</p>
-                  <p className="text-3xl font-bold text-blue-600">${distribucionActual.total_ganancia.toFixed(2)}</p>
-                </div>
-                <div className="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
-                  <p className="text-sm text-gray-600">Margen</p>
-                  <p className="text-3xl font-bold text-purple-600">
-                    {distribucionActual.total_ventas > 0
-                      ? ((distribucionActual.total_ganancia / distribucionActual.total_ventas) * 100).toFixed(1)
-                      : 0}
-                    %
-                  </p>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Distribución por Socio */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Daniela */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-                <div className="text-center">
-                  <p className="text-2xl font-oswald text-salsa mb-4">👤 Daniela</p>
-                  <div className="bg-salsa text-white rounded-lg p-6 mb-4">
-                    <p className="text-sm opacity-90">Ganancia (33.33%)</p>
-                    <p className="text-4xl font-bold">${distribucionActual.daniela_ganancia.toFixed(2)}</p>
-                  </div>
-                  <p className="text-sm text-gray-600">Porcentaje justo de la ganancia neta</p>
-                </div>
-              </div>
+              <Card variant="elevated">
+                <CardContent className="text-center">
+                  <p className="text-2xl font-bold text-primary-600 mb-4">👤 Daniela</p>
+                  <MetricCard
+                    title="Ganancia (33.33%)"
+                    value={`$${distribucionActual.daniela_ganancia.toFixed(2)}`}
+                    color="primary"
+                  />
+                  <p className="text-sm text-neutral-600 mt-4">Porcentaje justo de la ganancia neta</p>
+                </CardContent>
+              </Card>
 
-              {/* Carlos */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-totopo p-6">
-                <div className="text-center">
-                  <p className="text-2xl font-oswald text-totopo mb-4">👤 Carlos</p>
-                  <div className="bg-totopo text-white rounded-lg p-6 mb-4">
-                    <p className="text-sm opacity-90">Ganancia (33.33%)</p>
-                    <p className="text-4xl font-bold">${distribucionActual.carlos_ganancia.toFixed(2)}</p>
-                  </div>
-                  <p className="text-sm text-gray-600">Porcentaje justo de la ganancia neta</p>
-                </div>
-              </div>
+              <Card variant="elevated">
+                <CardContent className="text-center">
+                  <p className="text-2xl font-bold text-totopo mb-4">👤 Carlos</p>
+                  <MetricCard
+                    title="Ganancia (33.33%)"
+                    value={`$${distribucionActual.carlos_ganancia.toFixed(2)}`}
+                    color="secondary"
+                  />
+                  <p className="text-sm text-neutral-600 mt-4">Porcentaje justo de la ganancia neta</p>
+                </CardContent>
+              </Card>
 
-              {/* Erick */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-guajillo p-6">
-                <div className="text-center">
-                  <p className="text-2xl font-oswald text-guajillo mb-4">👤 Erick</p>
-                  <div className="bg-guajillo text-white rounded-lg p-6 mb-4">
-                    <p className="text-sm opacity-90">Ganancia (33.33%)</p>
-                    <p className="text-4xl font-bold">${distribucionActual.erick_ganancia.toFixed(2)}</p>
-                  </div>
-                  <p className="text-sm text-gray-600">Porcentaje justo de la ganancia neta</p>
-                </div>
-              </div>
+              <Card variant="elevated">
+                <CardContent className="text-center">
+                  <p className="text-2xl font-bold text-guajillo mb-4">👤 Erick</p>
+                  <MetricCard
+                    title="Ganancia (33.33%)"
+                    value={`$${distribucionActual.erick_ganancia.toFixed(2)}`}
+                    color="warning"
+                  />
+                  <p className="text-sm text-neutral-600 mt-4">Porcentaje justo de la ganancia neta</p>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Desglose de Costos */}
-            <div className="bg-white rounded-lg shadow-lg border-2 border-carbon p-6">
-              <h3 className="text-2xl font-oswald text-carbon mb-6">Desglose de Costos</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Compras de Insumos</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    ${((distribucionActual.total_costos * 0.6) || 0).toFixed(2)}
-                  </p>
+            <Card variant="elevated">
+              <CardHeader>
+                <CardTitle>Desglose de Costos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <MetricCard
+                    title="Compras de Insumos"
+                    value={`$${((distribucionActual.total_costos * 0.6) || 0).toFixed(2)}`}
+                    subtitle="60% de costos"
+                    color="error"
+                  />
+                  <MetricCard
+                    title="Gastos Operacionales"
+                    value={`$${((distribucionActual.total_costos * 0.25) || 0).toFixed(2)}`}
+                    subtitle="25% de costos"
+                    color="warning"
+                  />
+                  <MetricCard
+                    title="Nómina"
+                    value={`$${((distribucionActual.total_costos * 0.15) || 0).toFixed(2)}`}
+                    subtitle="15% de costos"
+                    color="secondary"
+                  />
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Gastos Operacionales</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    ${((distribucionActual.total_costos * 0.25) || 0).toFixed(2)}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Nómina</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    ${((distribucionActual.total_costos * 0.15) || 0).toFixed(2)}
-                  </p>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center border-2 border-carbon">
-            <p className="text-lg text-carbon mb-4">No hay datos para {mesSeleccionado}</p>
-            <p className="text-gray-600">Haz clic en "Calcular Distribución" para calcular</p>
-          </div>
+          <Card variant="elevated">
+            <CardContent className="text-center">
+              <p className="text-lg text-neutral-900 mb-4">No hay datos para {mesSeleccionado}</p>
+              <p className="text-neutral-600">Haz clic en "Calcular Distribución" para calcular</p>
+            </CardContent>
+          </Card>
         )}
 
         {/* Historical Data */}
         {distribuciones.length > 0 && (
-          <div className="mt-12 bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-2xl font-oswald text-salsa mb-6">Histórico de Distribuciones</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b-2 border-salsa">
-                    <th className="text-left py-4 px-4 font-semibold">Mes</th>
-                    <th className="text-right py-4 px-4 font-semibold">Ventas</th>
-                    <th className="text-right py-4 px-4 font-semibold">Costos</th>
-                    <th className="text-right py-4 px-4 font-semibold">Ganancia</th>
-                    <th className="text-right py-4 px-4 font-semibold">Por Socio</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {distribuciones.slice(0, 12).map((dist) => (
-                    <tr key={dist.mes} className="border-b hover:bg-nixtamal">
-                      <td className="py-3 px-4 font-semibold">{dist.mes}</td>
-                      <td className="text-right py-3 px-4 font-mono text-green-600">
-                        ${dist.total_ventas.toFixed(2)}
-                      </td>
-                      <td className="text-right py-3 px-4 font-mono text-red-600">
-                        ${dist.total_costos.toFixed(2)}
-                      </td>
-                      <td className="text-right py-3 px-4 font-mono text-blue-600 font-bold">
-                        ${dist.total_ganancia.toFixed(2)}
-                      </td>
-                      <td className="text-right py-3 px-4 font-mono text-purple-600 font-bold">
-                        ${dist.daniela_ganancia.toFixed(2)}
-                      </td>
+          <Card variant="elevated" className="mt-12">
+            <CardHeader>
+              <CardTitle>Histórico de Distribuciones</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b-2 border-primary-300">
+                      <th className="text-left py-4 px-4 font-semibold text-neutral-700">Mes</th>
+                      <th className="text-right py-4 px-4 font-semibold text-neutral-700">Ventas</th>
+                      <th className="text-right py-4 px-4 font-semibold text-neutral-700">Costos</th>
+                      <th className="text-right py-4 px-4 font-semibold text-neutral-700">Ganancia</th>
+                      <th className="text-right py-4 px-4 font-semibold text-neutral-700">Por Socio</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                  </thead>
+                  <tbody>
+                    {distribuciones.slice(0, 12).map((dist) => (
+                      <tr key={dist.mes} className="border-b hover:bg-neutral-50 transition-colors">
+                        <td className="py-3 px-4 font-semibold text-neutral-900">{dist.mes}</td>
+                        <td className="text-right py-3 px-4 font-mono text-success-600">
+                          ${dist.total_ventas.toFixed(2)}
+                        </td>
+                        <td className="text-right py-3 px-4 font-mono text-error-600">
+                          ${dist.total_costos.toFixed(2)}
+                        </td>
+                        <td className="text-right py-3 px-4 font-mono text-primary-600 font-bold">
+                          ${dist.total_ganancia.toFixed(2)}
+                        </td>
+                        <td className="text-right py-3 px-4 font-mono text-secondary-600 font-bold">
+                          ${dist.daniela_ganancia.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
