@@ -6,6 +6,7 @@ import EmpaquesPage from './pages/EmpaquesPage'
 import SubrecetasPage from './pages/SubrecetasPage'
 import PlatillosPage from './pages/PlatillosPage'
 import BitacorasOperacionalPage from './pages/BitacorasOperacionalPage'
+import ReportesPage from './pages/ReportesPage'
 import NominaPage from './pages/NominaPage'
 import LoginPage from './pages/LoginPage'
 import { useAuth } from './lib/authContext'
@@ -40,6 +41,8 @@ export default function App() {
         return <PlatillosPage />
       case 'bitacoras':
         return <BitacorasOperacionalPage />
+      case 'reportes':
+        return <ReportesPage />
       case 'nomina':
         return <NominaPage />
       case 'clientes':
