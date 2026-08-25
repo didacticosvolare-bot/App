@@ -10,6 +10,7 @@ import BitacorasOperacionalPage from './pages/BitacorasOperacionalPage'
 import ReportesPage from './pages/ReportesPage'
 import NominaPage from './pages/NominaPage'
 import ClientesPage from './pages/ClientesPage'
+import DistribucionPage from './pages/DistribucionPage'
 import LoginPage from './pages/LoginPage'
 import { useAuth } from './lib/authContext'
 
@@ -51,6 +52,8 @@ export default function App() {
         return <NominaPage />
       case 'clientes':
         return <ClientesPage />
+      case 'distribucion':
+        return <DistribucionPage />
       default:
         return <DashboardPage />
     }

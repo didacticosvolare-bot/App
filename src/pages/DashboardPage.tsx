@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/authContext'
+import InventoryAlerts from '../components/InventoryAlerts'
 
 interface DashboardMetrics {
   ventasHoy: number
@@ -155,6 +156,9 @@ export default function DashboardPage() {
             {new Date().toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
+
+        {/* Inventory Alerts */}
+        <InventoryAlerts compact={true} />
 
         {/* KPIs Principales */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">

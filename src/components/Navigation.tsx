@@ -19,6 +19,7 @@ export default function Navigation({ currentPage, onNavigate }: Props) {
     { id: 'reportes', label: 'Reportes', icon: '📈' },
     { id: 'nomina', label: 'Nómina', icon: '💼' },
     { id: 'clientes', label: 'Clientes', icon: '👥' },
+    { id: 'distribucion', label: 'Distribución', icon: '💰' },
   ]
 
   const handleLogout = async () => {
