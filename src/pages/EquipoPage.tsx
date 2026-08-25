@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Card, MetricCard, Alert } from '../components/base'
 
 export default function EquipoPage() {
   const [activeTab, setActiveTab] = useState<'nomina' | 'clientes'>('nomina')
@@ -9,19 +10,19 @@ export default function EquipoPage() {
         {/* Header */}
         <div className="mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-salsa mb-2">Equipo</h1>
-            <p className="text-carbon text-lg">Gestiona personal y clientes</p>
+            <h1 className="text-4xl font-bold text-primary-700 mb-2">👥 Equipo</h1>
+            <p className="text-neutral-600 text-lg">Gestiona personal y clientes</p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-4 border-b-2 border-carbon">
+        <div className="mb-6 flex gap-4 border-b-2 border-neutral-200">
           <button
             onClick={() => setActiveTab('nomina')}
             className={`px-6 py-3 font-semibold text-lg transition ${
               activeTab === 'nomina'
-                ? 'text-salsa border-b-4 border-salsa'
-                : 'text-carbon hover:text-salsa'
+                ? 'text-primary-600 border-b-4 border-primary-600'
+                : 'text-neutral-600 hover:text-primary-600'
             }`}
           >
             💼 Nómina
@@ -30,8 +31,8 @@ export default function EquipoPage() {
             onClick={() => setActiveTab('clientes')}
             className={`px-6 py-3 font-semibold text-lg transition ${
               activeTab === 'clientes'
-                ? 'text-salsa border-b-4 border-salsa'
-                : 'text-carbon hover:text-salsa'
+                ? 'text-primary-600 border-b-4 border-primary-600'
+                : 'text-neutral-600 hover:text-primary-600'
             }`}
           >
             👥 Clientes
@@ -40,64 +41,74 @@ export default function EquipoPage() {
 
         {/* Nomina Tab */}
         {activeTab === 'nomina' && (
-          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-            <h2 className="text-3xl font-oswald text-salsa mb-6">Gestión de Nómina</h2>
+          <Card variant="elevated">
+            <div className="p-8">
+              <h2 className="text-3xl font-oswald text-primary-700 mb-6">Gestión de Nómina</h2>
 
-            <div className="grid grid-cols-3 gap-6 mb-8">
-              <div className="bg-blue-50 rounded-lg p-6 border-2 border-blue-200">
-                <p className="text-sm text-gray-600 mb-2">Total Empleados</p>
-                <p className="text-4xl font-bold text-blue-600">3</p>
-                <p className="text-xs text-gray-500 mt-2">Daniela, Carlos, Erick</p>
+              <div className="grid grid-cols-3 gap-6 mb-8">
+                <MetricCard
+                  title="Total Empleados"
+                  value="3"
+                  subtitle="Daniela, Carlos, Erick"
+                  variant="primary"
+                />
+                <MetricCard
+                  title="Nómina Mes Actual"
+                  value="-"
+                  subtitle="Módulo en desarrollo"
+                  variant="secondary"
+                />
+                <MetricCard
+                  title="Capital Social"
+                  value="-"
+                  subtitle="Distribución de ganancias"
+                  variant="success"
+                />
               </div>
-              <div className="bg-green-50 rounded-lg p-6 border-2 border-green-200">
-                <p className="text-sm text-gray-600 mb-2">Nómina Mes Actual</p>
-                <p className="text-4xl font-bold text-green-600">-</p>
-                <p className="text-xs text-gray-500 mt-2">Módulo en desarrollo</p>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-6 border-2 border-purple-200">
-                <p className="text-sm text-gray-600 mb-2">Capital Social</p>
-                <p className="text-4xl font-bold text-purple-600">-</p>
-                <p className="text-xs text-gray-500 mt-2">Distribución de ganancias</p>
-              </div>
-            </div>
 
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-              <p className="text-carbon">
-                <strong>En desarrollo:</strong> Gestión de salarios, beneficios y distribución de capital social entre los 3 socios.
-              </p>
+              <Alert variant="warning">
+                <p className="text-neutral-900">
+                  <strong>En desarrollo:</strong> Gestión de salarios, beneficios y distribución de capital social entre los 3 socios.
+                </p>
+              </Alert>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Clientes Tab */}
         {activeTab === 'clientes' && (
-          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-8">
-            <h2 className="text-3xl font-oswald text-salsa mb-6">Programa de Clientes</h2>
+          <Card variant="elevated">
+            <div className="p-8">
+              <h2 className="text-3xl font-oswald text-primary-700 mb-6">Programa de Clientes</h2>
 
-            <div className="grid grid-cols-3 gap-6 mb-8">
-              <div className="bg-orange-50 rounded-lg p-6 border-2 border-orange-200">
-                <p className="text-sm text-gray-600 mb-2">Clientes Registrados</p>
-                <p className="text-4xl font-bold text-orange-600">0</p>
-                <p className="text-xs text-gray-500 mt-2">Sin datos</p>
+              <div className="grid grid-cols-3 gap-6 mb-8">
+                <MetricCard
+                  title="Clientes Registrados"
+                  value="0"
+                  subtitle="Sin datos"
+                  variant="primary"
+                />
+                <MetricCard
+                  title="Puntos Totales"
+                  value="0"
+                  subtitle="Acumulados"
+                  variant="secondary"
+                />
+                <MetricCard
+                  title="Compras Promedio"
+                  value="-"
+                  subtitle="Por cliente"
+                  variant="success"
+                />
               </div>
-              <div className="bg-pink-50 rounded-lg p-6 border-2 border-pink-200">
-                <p className="text-sm text-gray-600 mb-2">Puntos Totales</p>
-                <p className="text-4xl font-bold text-pink-600">0</p>
-                <p className="text-xs text-gray-500 mt-2">Acumulados</p>
-              </div>
-              <div className="bg-indigo-50 rounded-lg p-6 border-2 border-indigo-200">
-                <p className="text-sm text-gray-600 mb-2">Compras Promedio</p>
-                <p className="text-4xl font-bold text-indigo-600">-</p>
-                <p className="text-xs text-gray-500 mt-2">Por cliente</p>
-              </div>
-            </div>
 
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-              <p className="text-carbon">
-                <strong>En desarrollo:</strong> Programa de lealtad con puntos, descuentos y seguimiento de clientes frecuentes.
-              </p>
+              <Alert variant="warning">
+                <p className="text-neutral-900">
+                  <strong>En desarrollo:</strong> Programa de lealtad con puntos, descuentos y seguimiento de clientes frecuentes.
+                </p>
+              </Alert>
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>

@@ -17,18 +17,18 @@ export default function BitacorasOperacionalPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-salsa mb-2">Bitácoras Operacionales</h1>
-          <p className="text-carbon text-lg">Registra compras, gastos, ventas y mermas diarias</p>
+          <h1 className="text-4xl font-bold text-primary-700 mb-2">📊 Bitácoras Operacionales</h1>
+          <p className="text-neutral-600 text-lg">Registra compras, gastos, ventas y mermas diarias</p>
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-2 border-b-2 border-carbon overflow-x-auto">
+        <div className="mb-6 flex gap-2 border-b-2 border-neutral-200 overflow-x-auto">
           <button
             onClick={() => setActiveTab('compras')}
             className={`px-4 py-3 font-semibold whitespace-nowrap transition ${
               activeTab === 'compras'
-                ? 'text-salsa border-b-4 border-salsa'
-                : 'text-carbon hover:text-salsa'
+                ? 'text-primary-600 border-b-4 border-primary-600'
+                : 'text-neutral-600 hover:text-primary-600'
             }`}
           >
             📦 Compras
@@ -37,8 +37,8 @@ export default function BitacorasOperacionalPage() {
             onClick={() => setActiveTab('gastos')}
             className={`px-4 py-3 font-semibold whitespace-nowrap transition ${
               activeTab === 'gastos'
-                ? 'text-salsa border-b-4 border-salsa'
-                : 'text-carbon hover:text-salsa'
+                ? 'text-primary-600 border-b-4 border-primary-600'
+                : 'text-neutral-600 hover:text-primary-600'
             }`}
           >
             💰 Gastos
@@ -47,8 +47,8 @@ export default function BitacorasOperacionalPage() {
             onClick={() => setActiveTab('ventas')}
             className={`px-4 py-3 font-semibold whitespace-nowrap transition ${
               activeTab === 'ventas'
-                ? 'text-salsa border-b-4 border-salsa'
-                : 'text-carbon hover:text-salsa'
+                ? 'text-primary-600 border-b-4 border-primary-600'
+                : 'text-neutral-600 hover:text-primary-600'
             }`}
           >
             🛒 Ventas
@@ -57,8 +57,8 @@ export default function BitacorasOperacionalPage() {
             onClick={() => setActiveTab('mermas')}
             className={`px-4 py-3 font-semibold whitespace-nowrap transition ${
               activeTab === 'mermas'
-                ? 'text-salsa border-b-4 border-salsa'
-                : 'text-carbon hover:text-salsa'
+                ? 'text-primary-600 border-b-4 border-primary-600'
+                : 'text-neutral-600 hover:text-primary-600'
             }`}
           >
             ⚠️ Mermas
