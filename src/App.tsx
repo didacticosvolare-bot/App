@@ -5,6 +5,7 @@ import ProveedoresPage from './pages/ProveedoresPage'
 import EmpaquesPage from './pages/EmpaquesPage'
 import SubrecetasPage from './pages/SubrecetasPage'
 import PlatillosPage from './pages/PlatillosPage'
+import BitacorasPage from './pages/BitacorasPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('ingredientes')
@@ -22,6 +23,7 @@ export default function App() {
       case 'platillos':
         return <PlatillosPage />
       case 'bitacoras':
+        return <BitacorasPage />
       case 'equipo':
         return (
           <div className="min-h-screen bg-nixtamal p-8">
