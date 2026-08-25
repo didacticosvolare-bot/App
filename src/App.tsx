@@ -6,6 +6,7 @@ import EmpaquesPage from './pages/EmpaquesPage'
 import SubrecetasPage from './pages/SubrecetasPage'
 import PlatillosPage from './pages/PlatillosPage'
 import BitacorasPage from './pages/BitacorasPage'
+import EquipoPage from './pages/EquipoPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('ingredientes')
@@ -25,18 +26,7 @@ export default function App() {
       case 'bitacoras':
         return <BitacorasPage />
       case 'equipo':
-        return (
-          <div className="min-h-screen bg-nixtamal p-8">
-            <div className="max-w-7xl mx-auto">
-              <div className="bg-white rounded-lg p-8 text-center">
-                <h2 className="text-3xl font-oswald text-salsa mb-4">
-                  {currentPage.charAt(0).toUpperCase() + currentPage.slice(1)}
-                </h2>
-                <p className="text-carbon text-lg">Módulo en desarrollo</p>
-              </div>
-            </div>
-          </div>
-        )
+        return <EquipoPage />
       default:
         return <IngredientesPage />
     }
