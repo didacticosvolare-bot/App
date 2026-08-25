@@ -15,7 +15,8 @@ export default function Navigation({ currentPage, onNavigate }: Props) {
     { id: 'subrecetas', label: 'Subrecetas', icon: '🔗' },
     { id: 'platillos', label: 'Platillos', icon: '🍽️' },
     { id: 'bitacoras', label: 'Bitácoras', icon: '📊' },
-    { id: 'equipo', label: 'Equipo', icon: '👥' },
+    { id: 'nomina', label: 'Nómina', icon: '💼' },
+    { id: 'clientes', label: 'Clientes', icon: '👥' },
   ]
 
   const handleLogout = async () => {
