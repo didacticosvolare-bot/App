@@ -1,94 +1,93 @@
-# Los Tradicionales — App de Administración
+# Los Tradicionales - Sistema de Administración
 
-Sistema web de administración para "Los Tradicionales", negocio de chilaquiles en CDMX (Kangoo, Coyoacán).
+Sistema web completo para gestión de negocio de chilaquiles en CDMX. Construido con React, TypeScript, Vite y Supabase.
 
-**Stack**: React + Tailwind · Supabase (Postgres) · Vercel
+## Características
 
----
+### ✅ Módulos Completados
 
-## 🚀 Primeros Pasos
+#### 1. **Catálogo** - Gestión de Datos Maestros
+- **Ingredientes**: 25 ingredientes con categorías
+- **Proveedores**: 47 proveedores con precios y disponibilidad
+- **Empaques**: Materiales de empaque con costos
+- **Subrecetas**: Combinaciones de ingredientes (composición)
+- **Platillos**: Menú de platos con precios
 
-### 1. Ejecutar el SQL en Supabase
+#### 2. **Bitácoras Operacionales** - Registro de Transacciones Diarias
+- **Compras**: Registrar compras a proveedores con cálculo automático
+- **Gastos**: Registrar gastos operacionales por categoría
+- **Ventas**: Registrar ventas diarias con tracking de cliente
+- **Mermas**: Registrar desperdicios/pérdidas con razones
 
-El archivo SQL con las tablas y datos reales está listo:
+#### 3. **Autenticación** - Control de Acceso Multi-usuario
+- Login seguro con Supabase Auth
+- Usuarios: Daniela, Carlos, Erick (3 socios)
+- Sesión persistente
+- Logout desde navegación
 
-```
-db/migrations/001_init_los_tradicionales.sql
-```
+#### 4. **Nómina** - Gestión de Salarios
+- Administrar salarios mensuales de los 3 empleados
+- Calcular deducciones automáticamente
+- Rastrear capital social (distribución de ganancias)
+- Resumen de totales
 
-**Instrucciones completas**: Ver [`SETUP.md`](./SETUP.md)
+#### 5. **Reportes** - Análisis Financiero
+- Estado de Resultados (P&L)
+- Punto de Equilibrio (Break-even)
+- Resumen de Ventas (ingresos, unidades, precio promedio)
+- Desempeño por Platillo
+- Filtro por mes
 
-**Resumen rápido**:
-1. Abre https://app.supabase.com → Tu proyecto
-2. Ve a **SQL Editor** → **New Query**
-3. Copia & pega el contenido de `db/migrations/001_init_los_tradicionales.sql`
-4. Haz click en **Run**
+## Tecnología
 
-### 2. Configurar Variables de Entorno
+- **Frontend**: React 18.2 + TypeScript
+- **Build**: Vite
+- **Styling**: Tailwind CSS
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
 
-`.env.local` ya está creado con tus credenciales. Verifica que esté en `.gitignore`:
-
-```bash
-echo ".env.local" >> .gitignore
-```
-
-### 3. Instalar Dependencias
+## Instalación
 
 ```bash
 npm install
 npm run dev
 ```
 
----
-
-## 📊 Datos Poblados
-
-✅ **47 proveedores** con precios y disponibilidad  
-✅ **25 ingredientes** organizados por categoría  
-✅ **21 empaques** (bowls, tenedores, stickers, bolsas)  
-✅ **4 subrecetas** (Salsa Verde, Pollo, Cebollas Encurtidas, Café de Olla)  
-✅ **9 platillos individuales** (Chilaquiles en variaciones + Café + Tortas)  
-✅ **6 combos** (paquetes con platillo + café)  
-✅ **3 socios** (Daniela, Carlos, Erick - 33.3% cada uno)
-
----
-
-## 🎨 Diseño Visual
-
-**Colores**:
-- Verde salsa: `#4A6741`
-- Rojo guajillo: `#C1440E`
-- Crema nixtamal: `#F7F1E1`
-- Dorado totopo: `#D4A24C`
-- Carbón: `#2B2118`
-
-**Tipografía**:
-- Encabezados: Oswald (600-700)
-- Cuerpo: Work Sans
-- Números/precios: IBM Plex Mono (monoespaciada para alineación de ticket)
-
----
-
-## 📁 Estructura
+## Credenciales de Prueba
 
 ```
-/App
-├── db/migrations/
-│   └── 001_init_los_tradicionales.sql    ← SQL con tablas y datos
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── App.tsx
-├── .env.example                          ← Plantilla de variables
-├── .env.local                            ← Credenciales (local, no en Git)
-├── SETUP.md                              ← Instrucciones detalladas
-└── README.md                             ← Este archivo
+Email: daniela@lostradicionles.com
+Email: carlos@lostradicionles.com
+Email: erick@lostradicionles.com
+Contraseña: LosTradicionales123!
 ```
 
----
+## Estructura de Módulos
 
-## 🔐 Seguridad
+1. **Ingredientes** - Catálogo de 25 ingredientes
+2. **Proveedores** - 47 proveedores con precios
+3. **Empaques** - Materiales de empaque
+4. **Subrecetas** - Composiciones de ingredientes
+5. **Platillos** - Menú de platos
+6. **Bitácoras** - Compras, Gastos, Ventas, Mermas
+7. **Reportes** - Análisis financiero
+8. **Nómina** - Gestión de salarios
+9. **Clientes** - Sistema de lealtad (próximamente)
 
-- `.env.local` está en `.gitignore` (no subir credenciales)
-- `SUPABASE_SERVICE_ROLE_KEY` solo para servidor (nunca en frontend)
-- `VITE_SUPABASE_ANON_KEY` es segura para frontend (permisos limitados)
+## Funcionalidades
+
+✅ CRUD completo en todas las tablas
+✅ Autenticación segura
+✅ Cálculos automáticos
+✅ Validación de formularios
+✅ Reportes financieros
+✅ Análisis de punto de equilibrio
+✅ Control multi-usuario
+
+## Estado del Proyecto
+
+**Completado**: Funcionalidad principal del sistema
+**En Desarrollo**: Sistema de lealtad de clientes
+**Pendiente**: Exportación a PDF/Excel, gráficas avanzadas
+
+Creado con ❤️ para Los Tradicionales - CDMX
