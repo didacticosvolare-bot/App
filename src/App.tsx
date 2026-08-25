@@ -7,9 +7,24 @@ import SubrecetasPage from './pages/SubrecetasPage'
 import PlatillosPage from './pages/PlatillosPage'
 import BitacorasOperacionalPage from './pages/BitacorasOperacionalPage'
 import EquipoPage from './pages/EquipoPage'
+import LoginPage from './pages/LoginPage'
+import { useAuth } from './lib/authContext'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('ingredientes')
+  const { isAuthenticated, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-nixtamal flex items-center justify-center">
+        <p className="text-3xl text-carbon">Cargando...</p>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <LoginPage />
+  }
 
   const renderPage = () => {
     switch (currentPage) {
