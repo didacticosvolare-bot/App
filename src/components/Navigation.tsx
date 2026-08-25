@@ -9,6 +9,7 @@ export default function Navigation({ currentPage, onNavigate }: Props) {
   const { user, logout } = useAuth()
 
   const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: '📱' },
     { id: 'ingredientes', label: 'Ingredientes', icon: '🥕' },
     { id: 'proveedores', label: 'Proveedores', icon: '🏪' },
     { id: 'empaques', label: 'Empaques', icon: '📦' },

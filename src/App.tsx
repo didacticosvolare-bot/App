@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Navigation from './components/Navigation'
+import DashboardPage from './pages/DashboardPage'
 import IngredientesPage from './pages/IngredientesPage'
 import ProveedoresPage from './pages/ProveedoresPage'
 import EmpaquesPage from './pages/EmpaquesPage'
@@ -12,7 +13,7 @@ import LoginPage from './pages/LoginPage'
 import { useAuth } from './lib/authContext'
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('ingredientes')
+  const [currentPage, setCurrentPage] = useState('dashboard')
   const { isAuthenticated, loading } = useAuth()
 
   if (loading) {
@@ -29,6 +30,8 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'dashboard':
+        return <DashboardPage />
       case 'ingredientes':
         return <IngredientesPage />
       case 'proveedores':
@@ -58,7 +61,7 @@ export default function App() {
           </div>
         )
       default:
-        return <IngredientesPage />
+        return <DashboardPage />
     }
   }
 
