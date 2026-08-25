@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { Button, Card, FormInput, FormSelect, Badge } from '../components/base'
 
 interface Cupon {
   id: string
@@ -144,238 +145,210 @@ export default function PromocionesPage() {
   return (
     <div className="min-h-screen bg-nixtamal p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-oswald text-salsa mb-2">🎁 Promociones y Cupones</h1>
-          <p className="text-carbon text-lg">Gestión de descuentos y ofertas para clientes</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-oswald text-primary-700 mb-2">🎁 Promociones y Cupones</h1>
+            <p className="text-neutral-600 text-lg">Gestión de descuentos y ofertas para clientes</p>
+          </div>
+          {!showForm && (
+            <Button
+              onClick={() => {
+                setShowForm(true)
+                setEditingId(null)
+              }}
+              variant="primary"
+              size="lg"
+            >
+              + Nuevo Cupón
+            </Button>
+          )}
         </div>
 
         {!showForm ? (
           <>
-            <div className="mb-6">
-              <button
-                onClick={() => {
-                  setShowForm(true)
-                  setEditingId(null)
-                }}
-                className="px-6 py-2 bg-salsa text-white font-semibold rounded-lg hover:bg-opacity-90 transition"
-              >
-                + Nuevo Cupón
-              </button>
-            </div>
+            <div />
 
             {loading ? (
               <div className="text-center py-12">
-                <p className="text-xl text-carbon">Cargando...</p>
+                <p className="text-xl text-neutral-600">Cargando cupones...</p>
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-                {cupones.length === 0 ? (
-                  <p className="text-center text-gray-600 py-8">No hay cupones registrados</p>
-                ) : (
-                  <div className="space-y-4">
-                    {cupones.map((cupon) => (
-                      <div
-                        key={cupon.id}
-                        className={`border-2 rounded-lg p-6 ${
-                          cupon.activo ? 'border-salsa bg-white' : 'border-gray-300 bg-gray-50'
-                        }`}
-                      >
-                        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
-                          <div>
-                            <p className="text-sm text-gray-600">Código</p>
-                            <p className="text-xl font-bold text-salsa font-mono">{cupon.codigo}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Descuento</p>
-                            <p className="text-xl font-bold text-totopo">
-                              {cupon.tipo === 'porcentaje' ? `${cupon.valor}%` : `$${cupon.valor.toFixed(2)}`}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Usos</p>
-                            <p className="text-lg font-bold">
-                              {cupon.usos_actuales}/{cupon.usos_maximos || '∞'}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Válido</p>
-                            <p className="text-sm font-semibold text-carbon">
-                              {cupon.fecha_inicio} a {cupon.fecha_fin}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Estado</p>
-                            <p
-                              className={`text-sm font-bold ${
-                                cupon.activo ? 'text-green-600' : 'text-red-600'
-                              }`}
-                            >
-                              {cupon.activo ? '✓ Activo' : 'Inactivo'}
-                            </p>
-                          </div>
-                          <div className="flex gap-2 justify-end">
-                            <button
-                              onClick={() => toggleActivo(cupon.id, cupon.activo)}
-                              className={`px-3 py-1 rounded text-white font-semibold text-sm ${
-                                cupon.activo ? 'bg-gray-400' : 'bg-green-600'
-                              }`}
-                            >
-                              {cupon.activo ? 'Desactivar' : 'Activar'}
-                            </button>
-                            <button
-                              onClick={() => {
-                                setEditingId(cupon.id)
-                                setFormData({
-                                  codigo: cupon.codigo,
-                                  descripcion: cupon.descripcion,
-                                  tipo: cupon.tipo,
-                                  valor: cupon.valor.toString(),
-                                  minimo_compra: cupon.minimo_compra.toString(),
-                                  usos_maximos: cupon.usos_maximos?.toString() || '',
-                                  fecha_inicio: cupon.fecha_inicio,
-                                  fecha_fin: cupon.fecha_fin,
-                                })
-                                setShowForm(true)
-                              }}
-                              className="px-3 py-1 bg-totopo text-white rounded font-semibold text-sm"
-                            >
-                              Editar
-                            </button>
-                            <button
-                              onClick={() => deleteCupon(cupon.id)}
-                              className="px-3 py-1 bg-guajillo text-white rounded font-semibold text-sm"
-                            >
-                              Eliminar
-                            </button>
+              <Card variant="elevated">
+                <div className="p-6">
+                  {cupones.length === 0 ? (
+                    <p className="text-center text-neutral-600 py-8">No hay cupones registrados</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {cupones.map((cupon) => (
+                        <div
+                          key={cupon.id}
+                          className={`border-2 rounded-lg p-6 ${
+                            cupon.activo ? 'border-primary-200 bg-white' : 'border-neutral-200 bg-neutral-50'
+                          }`}
+                        >
+                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
+                            <div>
+                              <p className="text-sm text-neutral-600">Código</p>
+                              <p className="text-xl font-bold text-primary-600 font-mono">{cupon.codigo}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-neutral-600">Descuento</p>
+                              <p className="text-xl font-bold text-secondary-600">
+                                {cupon.tipo === 'porcentaje' ? `${cupon.valor}%` : `$${cupon.valor.toFixed(2)}`}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-neutral-600">Usos</p>
+                              <p className="text-lg font-bold text-neutral-900">
+                                {cupon.usos_actuales}/{cupon.usos_maximos || '∞'}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-neutral-600">Válido</p>
+                              <p className="text-sm font-semibold text-neutral-700">
+                                {cupon.fecha_inicio} a {cupon.fecha_fin}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-neutral-600">Estado</p>
+                              <Badge variant={cupon.activo ? 'success' : 'neutral'}>
+                                {cupon.activo ? '✓ Activo' : 'Inactivo'}
+                              </Badge>
+                            </div>
+                            <div className="flex gap-2 justify-end">
+                              <Button
+                                onClick={() => toggleActivo(cupon.id, cupon.activo)}
+                                variant={cupon.activo ? 'ghost' : 'success'}
+                                size="sm"
+                              >
+                                {cupon.activo ? 'Desactivar' : 'Activar'}
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  setEditingId(cupon.id)
+                                  setFormData({
+                                    codigo: cupon.codigo,
+                                    descripcion: cupon.descripcion,
+                                    tipo: cupon.tipo,
+                                    valor: cupon.valor.toString(),
+                                    minimo_compra: cupon.minimo_compra.toString(),
+                                    usos_maximos: cupon.usos_maximos?.toString() || '',
+                                    fecha_inicio: cupon.fecha_inicio,
+                                    fecha_fin: cupon.fecha_fin,
+                                  })
+                                  setShowForm(true)
+                                }}
+                                variant="secondary"
+                                size="sm"
+                              >
+                                Editar
+                              </Button>
+                              <Button
+                                onClick={() => deleteCupon(cupon.id)}
+                                variant="error"
+                                size="sm"
+                              >
+                                Eliminar
+                              </Button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </Card>
             )}
           </>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-            <h2 className="text-2xl font-oswald text-salsa mb-6">
-              {editingId ? 'Editar Cupón' : 'Nuevo Cupón'}
-            </h2>
+          <Card variant="elevated">
+            <div className="p-6">
+              <h2 className="text-2xl font-oswald text-primary-700 mb-6">
+                {editingId ? '✏️ Editar Cupón' : '➕ Nuevo Cupón'}
+              </h2>
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Código *</label>
-                  <input
-                    type="text"
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormInput
+                    label="Código *"
                     value={formData.codigo}
                     onChange={(e) => setFormData({ ...formData, codigo: e.target.value.toUpperCase() })}
                     placeholder="VERANO2024"
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
                   />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Descripción</label>
-                  <input
-                    type="text"
+                  <FormInput
+                    label="Descripción"
                     value={formData.descripcion}
                     onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                     placeholder="Promoción de verano"
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Tipo</label>
-                  <select
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormSelect
+                    label="Tipo"
                     value={formData.tipo}
                     onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
-                  >
-                    <option value="porcentaje">Porcentaje (%)</option>
-                    <option value="cantidad_fija">Monto Fijo ($)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Valor *</label>
-                  <input
+                    options={[
+                      { value: 'porcentaje', label: 'Porcentaje (%)' },
+                      { value: 'cantidad_fija', label: 'Monto Fijo ($)' },
+                    ]}
+                  />
+                  <FormInput
+                    label="Valor *"
                     type="number"
                     step="0.01"
                     value={formData.valor}
                     onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
                     placeholder="15"
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
                   />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Compra Mínima ($)</label>
-                  <input
+                  <FormInput
+                    label="Compra Mínima ($)"
                     type="number"
                     step="0.01"
                     value={formData.minimo_compra}
                     onChange={(e) => setFormData({ ...formData, minimo_compra: e.target.value })}
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Usos Máximos</label>
-                  <input
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormInput
+                    label="Usos Máximos"
                     type="number"
                     value={formData.usos_maximos}
                     onChange={(e) => setFormData({ ...formData, usos_maximos: e.target.value })}
                     placeholder="Sin límite"
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
                   />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Fecha Inicio</label>
-                  <input
+                  <FormInput
+                    label="Fecha Inicio"
                     type="date"
                     value={formData.fecha_inicio}
                     onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
                   />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-carbon mb-2">Fecha Fin</label>
-                  <input
+                  <FormInput
+                    label="Fecha Fin"
                     type="date"
                     value={formData.fecha_fin}
                     onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
-                    className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
                   />
                 </div>
-              </div>
 
-              <div className="flex gap-4 pt-4">
-                <button
-                  onClick={guardarCupon}
-                  className="px-6 py-2 bg-salsa text-white font-semibold rounded-lg hover:bg-opacity-90 transition"
-                >
-                  Guardar Cupón
-                </button>
-                <button
-                  onClick={() => {
-                    setShowForm(false)
-                    setEditingId(null)
-                  }}
-                  className="px-4 py-2 bg-gray-300 text-carbon font-semibold rounded hover:bg-gray-400 transition"
-                >
-                  Cancelar
-                </button>
+                <div className="flex gap-4 pt-4">
+                  <Button onClick={guardarCupon} variant="success">
+                    💾 Guardar Cupón
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowForm(false)
+                      setEditingId(null)
+                    }}
+                    variant="ghost"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>

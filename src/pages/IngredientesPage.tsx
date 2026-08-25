@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import IngredientesTable from '../components/IngredientesTable'
 import IngredientForm from '../components/IngredientForm'
+import { Button, Alert } from '../components/base'
 
 interface Ingrediente {
   id: string
@@ -77,18 +78,19 @@ export default function IngredientesPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-salsa mb-2">Ingredientes</h1>
-            <p className="text-carbon text-lg">Gestiona el catálogo de ingredientes y sus categorías</p>
+            <h1 className="text-4xl font-bold text-primary-700 mb-2">🧂 Ingredientes</h1>
+            <p className="text-neutral-600 text-lg">Gestiona el catálogo de ingredientes y sus categorías</p>
           </div>
-          <button
+          <Button
             onClick={() => {
               setEditingId(null)
               setShowForm(!showForm)
             }}
-            className="btn-primary text-lg"
+            variant={showForm ? 'ghost' : 'primary'}
+            size="lg"
           >
             {showForm ? '✕ Cancelar' : '+ Nuevo Ingrediente'}
-          </button>
+          </Button>
         </div>
 
         {/* Formulario */}
@@ -98,17 +100,16 @@ export default function IngredientesPage() {
           </div>
         )}
 
-        {/* Tabla */}
+        {/* Errores */}
         {error && (
-          <div className="mb-8 p-4 bg-guajillo text-white rounded-lg text-lg">
-            <p className="font-semibold">⚠️ {error}</p>
-            <button
-              onClick={fetchIngredientes}
-              className="mt-2 px-4 py-2 bg-white text-guajillo font-semibold rounded hover:bg-gray-100"
-            >
-              Reintentar
-            </button>
-          </div>
+          <Alert variant="error" title="Error" className="mb-8">
+            <div className="flex justify-between items-center">
+              <span>{error}</span>
+              <Button onClick={fetchIngredientes} variant="ghost" size="sm">
+                Reintentar
+              </Button>
+            </div>
+          </Alert>
         )}
 
         {loading ? (

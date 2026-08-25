@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import PlatilloTable from '../components/PlatilloTable'
 import PlatilloForm from '../components/PlatilloForm'
+import { Button, FormInput, Alert } from '../components/base'
 
 interface Platillo {
   id: string
@@ -85,18 +86,19 @@ export default function PlatillosPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-salsa mb-2">Platillos</h1>
-            <p className="text-carbon text-lg">Gestiona menú de platos y combos</p>
+            <h1 className="text-4xl font-bold text-primary-700 mb-2">🍽️ Platillos</h1>
+            <p className="text-neutral-600 text-lg">Gestiona menú de platos y combos</p>
           </div>
-          <button
+          <Button
             onClick={() => {
               setEditingId(null)
               setShowForm(!showForm)
             }}
-            className="btn-primary text-lg"
+            variant={showForm ? 'ghost' : 'primary'}
+            size="lg"
           >
             {showForm ? '✕ Cancelar' : '+ Nuevo Platillo'}
-          </button>
+          </Button>
         </div>
 
         {/* Formulario */}
@@ -109,33 +111,32 @@ export default function PlatillosPage() {
         {/* Filtro */}
         {!showForm && (
           <div className="mb-6 flex gap-4">
-            <input
-              type="text"
-              placeholder="Filtrar por nombre..."
+            <FormInput
               value={filterNombre}
               onChange={(e) => setFilterNombre(e.target.value)}
-              className="flex-1 px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+              placeholder="Filtrar por nombre..."
+              className="flex-1"
             />
-            <button
+            <Button
               onClick={() => setFilterNombre('')}
-              className="px-4 py-2 bg-gray-300 text-carbon font-semibold rounded hover:bg-gray-400 transition"
+              variant="ghost"
+              className="whitespace-nowrap"
             >
               Limpiar
-            </button>
+            </Button>
           </div>
         )}
 
         {/* Errores */}
         {error && (
-          <div className="mb-8 p-4 bg-guajillo text-white rounded-lg text-lg">
-            <p className="font-semibold">⚠️ {error}</p>
-            <button
-              onClick={fetchPlatillos}
-              className="mt-2 px-4 py-2 bg-white text-guajillo font-semibold rounded hover:bg-gray-100"
-            >
-              Reintentar
-            </button>
-          </div>
+          <Alert variant="error" title="Error" className="mb-8">
+            <div className="flex justify-between items-center">
+              <span>{error}</span>
+              <Button onClick={fetchPlatillos} variant="ghost" size="sm">
+                Reintentar
+              </Button>
+            </div>
+          </Alert>
         )}
 
         {/* Tabla */}
