@@ -12,6 +12,7 @@ export default function Navigation({ currentPage, onNavigate }: Props) {
     { id: 'dashboard', label: 'Dashboard', icon: '📱' },
     { id: 'pos', label: 'POS', icon: '🛒' },
     { id: 'ingredientes', label: 'Ingredientes', icon: '🥕' },
+    { id: 'inventario', label: 'Inventario', icon: '📦' },
     { id: 'proveedores', label: 'Proveedores', icon: '🏪' },
     { id: 'empaques', label: 'Empaques', icon: '📦' },
     { id: 'subrecetas', label: 'Subrecetas', icon: '🔗' },
@@ -20,6 +21,7 @@ export default function Navigation({ currentPage, onNavigate }: Props) {
     { id: 'reportes', label: 'Reportes', icon: '📈' },
     { id: 'nomina', label: 'Nómina', icon: '💼' },
     { id: 'clientes', label: 'Clientes', icon: '👥' },
+    { id: 'promociones', label: 'Promociones', icon: '🎁' },
     { id: 'distribucion', label: 'Distribución', icon: '💰' },
   ]
 

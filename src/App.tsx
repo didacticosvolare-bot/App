@@ -12,6 +12,8 @@ import NominaPage from './pages/NominaPage'
 import ClientesPage from './pages/ClientesPage'
 import DistribucionPage from './pages/DistribucionPage'
 import POSPage from './pages/POSPage'
+import InventoryPage from './pages/InventoryPage'
+import PromocionesPage from './pages/PromocionesPage'
 import LoginPage from './pages/LoginPage'
 import { useAuth } from './lib/authContext'
 
@@ -57,6 +59,10 @@ export default function App() {
         return <DistribucionPage />
       case 'pos':
         return <POSPage />
+      case 'inventario':
+        return <InventoryPage />
+      case 'promociones':
+        return <PromocionesPage />
       default:
         return <DashboardPage />
     }
