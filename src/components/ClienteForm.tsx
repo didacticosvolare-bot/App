@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { FormInput, FormSelect, Button, Card, CardHeader, CardTitle, CardContent, Alert } from './base'
 
 interface Props {
   editingId: string | null
@@ -88,121 +89,122 @@ export default function ClienteForm({ editingId, onClose }: Props) {
     }
   }
 
+  const membershipLevel = parseInt(puntos) >= 5000
+    ? 'Platino'
+    : parseInt(puntos) >= 3000
+      ? 'Oro'
+      : parseInt(puntos) >= 1000
+        ? 'Plata'
+        : 'Bronce'
+
   return (
-    <div className="bg-white border-2 border-salsa rounded-lg p-6">
-      <h2 className="text-2xl font-oswald text-salsa mb-6">
-        {editingId ? 'Editar Cliente' : 'Nuevo Cliente'}
-      </h2>
+    <Card variant="elevated">
+      <CardHeader>
+        <CardTitle>
+          {editingId ? 'Editar Cliente' : 'Nuevo Cliente'}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {error && (
+          <Alert variant="error" className="mb-6">
+            {error}
+          </Alert>
+        )}
 
-      {error && <div className="mb-4 p-4 bg-guajillo text-white rounded-lg">{error}</div>}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-semibold text-carbon mb-2">Nombre *</label>
-            <input
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormInput
+              label="Nombre"
               type="text"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               placeholder="Nombre completo"
-              className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+              required
             />
-          </div>
 
-          <div>
-            <label className="block font-semibold text-carbon mb-2">Email *</label>
-            <input
+            <FormInput
+              label="Email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="correo@ejemplo.com"
-              className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+              required
             />
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-semibold text-carbon mb-2">Teléfono *</label>
-            <input
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormInput
+              label="Teléfono"
               type="tel"
               value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
               placeholder="5551234567"
-              className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+              required
+            />
+
+            <FormSelect
+              label="Estado"
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+              options={[
+                { value: 'activo', label: 'Activo' },
+                { value: 'inactivo', label: 'Inactivo' },
+              ]}
             />
           </div>
 
-          <div>
-            <label className="block font-semibold text-carbon mb-2">Estado</label>
-            <select
-              value={estado}
-              onChange={(e) => setEstado(e.target.value)}
-              className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
-            >
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-semibold text-carbon mb-2">Puntos Acumulados</label>
-            <input
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormInput
+              label="Puntos Acumulados"
               type="number"
               value={puntos}
               onChange={(e) => setPuntos(e.target.value)}
               placeholder="0"
-              className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
             />
-          </div>
 
-          <div>
-            <label className="block font-semibold text-carbon mb-2">Compras Totales ($)</label>
-            <input
+            <FormInput
+              label="Compras Totales ($)"
               type="number"
               step="0.01"
               value={comprasTotales}
               onChange={(e) => setComprasTotales(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
             />
           </div>
-        </div>
 
-        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded space-y-2">
-          <p className="text-sm text-carbon">
-            <strong>Nivel de Membresía:</strong>{' '}
-            {parseInt(puntos) >= 5000
-              ? 'Platino'
-              : parseInt(puntos) >= 3000
-                ? 'Oro'
-                : parseInt(puntos) >= 1000
-                  ? 'Plata'
-                  : 'Bronce'}
-          </p>
-          <p className="text-sm text-carbon">
-            <strong>Total en Compras:</strong> ${parseFloat(comprasTotales).toFixed(2)}
-          </p>
-          <p className="text-sm text-carbon">
-            <strong>Puntos Disponibles:</strong> {parseInt(puntos)} pts
-          </p>
-        </div>
+          <Alert variant="info" title="Resumen de Membresía" className="space-y-2">
+            <div>
+              <strong>Nivel:</strong> {membershipLevel}
+            </div>
+            <div>
+              <strong>Total en Compras:</strong> ${parseFloat(comprasTotales).toFixed(2)}
+            </div>
+            <div>
+              <strong>Puntos Disponibles:</strong> {parseInt(puntos)} pts
+            </div>
+          </Alert>
 
-        <div className="flex gap-4 pt-4">
-          <button type="submit" disabled={loading} className="btn-primary disabled:opacity-50">
-            {loading ? 'Guardando...' : editingId ? 'Actualizar Cliente' : 'Crear Cliente'}
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-300 text-carbon font-semibold rounded hover:bg-gray-400 transition"
-          >
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="flex gap-4 pt-4">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={loading}
+              isLoading={loading}
+            >
+              {editingId ? 'Actualizar Cliente' : 'Crear Cliente'}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="lg"
+              onClick={onClose}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

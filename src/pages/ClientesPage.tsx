@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import ClientesTable from '../components/ClientesTable'
 import ClienteForm from '../components/ClienteForm'
+import { MetricCard, Card, CardHeader, CardTitle, CardContent, FormInput, Button } from '../components/base'
 
 interface Cliente {
   id: string
@@ -85,54 +86,60 @@ export default function ClientesPage() {
         {!showForm ? (
           <>
             <div className="mb-6 flex gap-4 flex-wrap items-center">
-              <input
-                type="text"
-                placeholder="Buscar por nombre, teléfono o email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa flex-1 min-w-64"
-              />
-              <button
+              <div className="flex-1 min-w-64">
+                <FormInput
+                  placeholder="Buscar por nombre, teléfono o email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Button
+                variant="primary"
+                size="lg"
                 onClick={() => setShowForm(true)}
-                className="px-6 py-2 bg-salsa text-white font-semibold rounded-lg hover:bg-opacity-90 transition"
               >
                 + Nuevo Cliente
-              </button>
+              </Button>
             </div>
 
             {loading ? (
               <div className="text-center py-12">
-                <p className="text-xl text-carbon">Cargando clientes...</p>
+                <p className="text-xl text-neutral-700">Cargando clientes...</p>
               </div>
             ) : (
               <>
-                <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-salsa text-white rounded-lg p-4 text-center">
-                      <p className="text-sm mb-2">Total Clientes</p>
-                      <p className="text-4xl font-bold">{filteredClientes.length}</p>
-                    </div>
-                    <div className="bg-totopo text-white rounded-lg p-4 text-center">
-                      <p className="text-sm mb-2">Clientes Activos</p>
-                      <p className="text-4xl font-bold">
-                        {filteredClientes.filter((c) => c.estado === 'activo').length}
-                      </p>
-                    </div>
-                    <div className="bg-guajillo text-white rounded-lg p-4 text-center">
-                      <p className="text-sm mb-2">Puntos Totales</p>
-                      <p className="text-4xl font-bold">
-                        {filteredClientes.reduce((sum, c) => sum + c.puntos, 0)}
-                      </p>
-                    </div>
-                    <div className="bg-purple-600 text-white rounded-lg p-4 text-center">
-                      <p className="text-sm mb-2">Ventas Totales</p>
-                      <p className="text-3xl font-bold">
-                        ${filteredClientes.reduce((sum, c) => sum + c.compras_totales, 0).toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                  <ClientesTable clientes={filteredClientes} onEdit={handleEdit} onDelete={handleDelete} />
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                  <MetricCard
+                    title="Total Clientes"
+                    value={filteredClientes.length}
+                    color="primary"
+                    icon="👥"
+                  />
+                  <MetricCard
+                    title="Clientes Activos"
+                    value={filteredClientes.filter((c) => c.estado === 'activo').length}
+                    color="success"
+                    icon="✅"
+                  />
+                  <MetricCard
+                    title="Puntos Totales"
+                    value={filteredClientes.reduce((sum, c) => sum + c.puntos, 0)}
+                    color="warning"
+                    icon="🎁"
+                  />
+                  <MetricCard
+                    title="Ventas Totales"
+                    value={`$${filteredClientes.reduce((sum, c) => sum + c.compras_totales, 0).toFixed(2)}`}
+                    color="secondary"
+                    icon="💵"
+                  />
                 </div>
+
+                <Card variant="elevated">
+                  <CardContent>
+                    <ClientesTable clientes={filteredClientes} onEdit={handleEdit} onDelete={handleDelete} />
+                  </CardContent>
+                </Card>
               </>
             )}
           </>
