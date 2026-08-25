@@ -1,48 +1,43 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import Navigation from './components/Navigation'
+import IngredientesPage from './pages/IngredientesPage'
+import ProveedoresPage from './pages/ProveedoresPage'
 
 export default function App() {
-  const [message, setMessage] = useState('Cargando...')
-  const [supabaseStatus, setSupabaseStatus] = useState('Verificando conexión...')
+  const [currentPage, setCurrentPage] = useState('ingredientes')
 
-  useEffect(() => {
-    // Test básico
-    setMessage('✅ React está funcionando')
-
-    // Test de variables de entorno
-    const url = import.meta.env.VITE_SUPABASE_URL
-    const key = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-    if (url && key) {
-      setSupabaseStatus('✅ Variables de entorno cargadas')
-    } else {
-      setSupabaseStatus('❌ Faltan variables de entorno')
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'ingredientes':
+        return <IngredientesPage />
+      case 'proveedores':
+        return <ProveedoresPage />
+      case 'empaques':
+      case 'subrecetas':
+      case 'platillos':
+      case 'bitacoras':
+      case 'equipo':
+        return (
+          <div className="min-h-screen bg-nixtamal p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-white rounded-lg p-8 text-center">
+                <h2 className="text-3xl font-oswald text-salsa mb-4">
+                  {currentPage.charAt(0).toUpperCase() + currentPage.slice(1)}
+                </h2>
+                <p className="text-carbon text-lg">Módulo en desarrollo</p>
+              </div>
+            </div>
+          </div>
+        )
+      default:
+        return <IngredientesPage />
     }
-  }, [])
+  }
 
   return (
-    <div className="min-h-screen bg-nixtamal flex items-center justify-center p-8">
-      <div className="bg-white border-4 border-salsa rounded-lg p-8 max-w-md text-center">
-        <h1 className="text-3xl font-oswald text-salsa mb-6">Los Tradicionales</h1>
-
-        <div className="mb-6 p-4 bg-green-100 rounded-lg">
-          <p className="text-lg font-semibold text-carbon">{message}</p>
-        </div>
-
-        <div className="mb-6 p-4 bg-blue-100 rounded-lg">
-          <p className="text-sm font-mono text-carbon">{supabaseStatus}</p>
-        </div>
-
-        <button
-          onClick={() => window.location.reload()}
-          className="px-6 py-3 bg-salsa text-white font-oswald text-lg rounded-lg hover:bg-opacity-90 transition"
-        >
-          Recargar Página
-        </button>
-
-        <p className="text-gray-600 text-sm mt-4">
-          Si ves este mensaje, React está funcionando correctamente
-        </p>
-      </div>
+    <div className="min-h-screen bg-nixtamal">
+      <Navigation currentPage={currentPage} onNavigate={setCurrentPage} />
+      {renderPage()}
     </div>
   )
 }
