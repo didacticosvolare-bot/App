@@ -3,6 +3,7 @@ import Navigation from './components/Navigation'
 import IngredientesPage from './pages/IngredientesPage'
 import ProveedoresPage from './pages/ProveedoresPage'
 import EmpaquesPage from './pages/EmpaquesPage'
+import SubrecetasPage from './pages/SubrecetasPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('ingredientes')
@@ -16,6 +17,7 @@ export default function App() {
       case 'empaques':
         return <EmpaquesPage />
       case 'subrecetas':
+        return <SubrecetasPage />
       case 'platillos':
       case 'bitacoras':
       case 'equipo':
