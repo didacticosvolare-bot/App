@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import BitacoraTable from '../components/BitacoraTable'
+import { Button, FormSelect, Alert } from '../components/base'
 
 interface Bitacora {
   id: string
@@ -57,55 +58,54 @@ export default function BitacorasPage() {
         {/* Header */}
         <div className="mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-salsa mb-2">Bitácoras</h1>
-            <p className="text-carbon text-lg">Registro de transacciones y movimientos</p>
+            <h1 className="text-4xl font-bold text-primary-700 mb-2">📋 Bitácoras</h1>
+            <p className="text-neutral-600 text-lg">Registro de transacciones y movimientos</p>
           </div>
         </div>
 
         {/* Filtros */}
         <div className="mb-6 flex gap-4">
-          <select
+          <FormSelect
             value={filterTipo}
             onChange={(e) => setFilterTipo(e.target.value)}
-            className="px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa bg-white text-carbon"
-          >
-            <option value="todos">Todos los tipos</option>
-            <option value="compra">Compras</option>
-            <option value="gasto">Gastos</option>
-            <option value="venta">Ventas</option>
-            <option value="merma">Mermas</option>
-          </select>
+            options={[
+              { value: 'todos', label: 'Todos los tipos' },
+              { value: 'compra', label: 'Compras' },
+              { value: 'gasto', label: 'Gastos' },
+              { value: 'venta', label: 'Ventas' },
+              { value: 'merma', label: 'Mermas' },
+            ]}
+          />
 
           <input
             type="date"
             value={filterFecha}
             onChange={(e) => setFilterFecha(e.target.value)}
-            className="px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+            className="px-4 py-2 border-2 border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
 
-          <button
+          <Button
             onClick={() => {
               setFilterTipo('todos')
               setFilterFecha('')
               fetchBitacoras()
             }}
-            className="px-4 py-2 bg-gray-300 text-carbon font-semibold rounded hover:bg-gray-400 transition"
+            variant="ghost"
           >
             Limpiar
-          </button>
+          </Button>
         </div>
 
         {/* Errores */}
         {error && (
-          <div className="mb-8 p-4 bg-guajillo text-white rounded-lg text-lg">
-            <p className="font-semibold">⚠️ {error}</p>
-            <button
-              onClick={fetchBitacoras}
-              className="mt-2 px-4 py-2 bg-white text-guajillo font-semibold rounded hover:bg-gray-100"
-            >
-              Reintentar
-            </button>
-          </div>
+          <Alert variant="error" title="Error" className="mb-8">
+            <div className="flex justify-between items-center">
+              <span>{error}</span>
+              <Button onClick={fetchBitacoras} variant="ghost" size="sm">
+                Reintentar
+              </Button>
+            </div>
+          </Alert>
         )}
 
         {/* Tabla */}

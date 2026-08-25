@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import ProveedoresTable from '../components/ProveedoresTable'
 import ProveedorForm from '../components/ProveedorForm'
+import { Button, FormInput, Alert } from '../components/base'
 
 interface Proveedor {
   id: string
@@ -90,18 +91,19 @@ export default function ProveedoresPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-salsa mb-2">Proveedores</h1>
-            <p className="text-carbon text-lg">Gestiona precios y disponibilidad de proveedores</p>
+            <h1 className="text-4xl font-bold text-primary-700 mb-2">🤝 Proveedores</h1>
+            <p className="text-neutral-600 text-lg">Gestiona precios y disponibilidad de proveedores</p>
           </div>
-          <button
+          <Button
             onClick={() => {
               setEditingId(null)
               setShowForm(!showForm)
             }}
-            className="btn-primary text-lg"
+            variant={showForm ? 'ghost' : 'primary'}
+            size="lg"
           >
             {showForm ? '✕ Cancelar' : '+ Nuevo Proveedor'}
-          </button>
+          </Button>
         </div>
 
         {/* Formulario */}
@@ -114,33 +116,28 @@ export default function ProveedoresPage() {
         {/* Filtro */}
         {!showForm && (
           <div className="mb-6 flex gap-4">
-            <input
-              type="text"
-              placeholder="Filtrar por producto..."
+            <FormInput
               value={filterProducto}
               onChange={(e) => setFilterProducto(e.target.value)}
-              className="flex-1 px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+              placeholder="Filtrar por producto..."
+              className="flex-1"
             />
-            <button
-              onClick={() => setFilterProducto('')}
-              className="px-4 py-2 bg-gray-300 text-carbon font-semibold rounded hover:bg-gray-400 transition"
-            >
+            <Button onClick={() => setFilterProducto('')} variant="ghost">
               Limpiar
-            </button>
+            </Button>
           </div>
         )}
 
         {/* Errores */}
         {error && (
-          <div className="mb-8 p-4 bg-guajillo text-white rounded-lg text-lg">
-            <p className="font-semibold">⚠️ {error}</p>
-            <button
-              onClick={fetchProveedores}
-              className="mt-2 px-4 py-2 bg-white text-guajillo font-semibold rounded hover:bg-gray-100"
-            >
-              Reintentar
-            </button>
-          </div>
+          <Alert variant="error" title="Error" className="mb-8">
+            <div className="flex justify-between items-center">
+              <span>{error}</span>
+              <Button onClick={fetchProveedores} variant="ghost" size="sm">
+                Reintentar
+              </Button>
+            </div>
+          </Alert>
         )}
 
         {/* Tabla */}
