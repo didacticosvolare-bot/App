@@ -10,6 +10,12 @@ interface DashboardMetrics {
   ingredientesBajos: number
 }
 
+interface TopCliente {
+  nombre: string
+  compras_totales: number
+  puntos: number
+}
+
 export default function DashboardPage() {
   const { user } = useAuth()
   const [metrics, setMetrics] = useState<DashboardMetrics>({
@@ -23,6 +29,7 @@ export default function DashboardPage() {
   const [topPlatillos, setTopPlatillos] = useState<
     Array<{ nombre: string; cantidad: number; ingreso: number }>
   >([])
+  const [topClientes, setTopClientes] = useState<TopCliente[]>([])
 
   useEffect(() => {
     fetchMetrics()
@@ -106,7 +113,16 @@ export default function DashboardPage() {
         .sort((a, b) => b.ingreso - a.ingreso)
         .slice(0, 5)
 
+      // Top Clientes
+      const { data: clientesData } = await supabase
+        .from('clientes')
+        .select('nombre, compras_totales, puntos')
+        .order('compras_totales', { ascending: false })
+        .limit(5)
+        .timeout(5000)
+
       setTopPlatillos(topPlatillosArray)
+      setTopClientes(clientesData || [])
       setMetrics({
         ventasHoy,
         ventasMes,
@@ -175,6 +191,27 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* KPI Clientes */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-purple-600 text-white rounded-lg shadow-lg border-l-4 border-purple-400 p-6">
+            <p className="text-sm mb-2 opacity-90">Puntos en Circulación</p>
+            <p className="text-4xl font-bold">{topClientes.reduce((sum, c) => sum + c.puntos, 0)}</p>
+            <p className="text-xs opacity-75 mt-2">Programa de lealtad activo</p>
+          </div>
+
+          <div className="bg-pink-600 text-white rounded-lg shadow-lg border-l-4 border-pink-400 p-6">
+            <p className="text-sm mb-2 opacity-90">Cliente Top</p>
+            <p className="text-2xl font-bold">{topClientes[0]?.nombre || '-'}</p>
+            <p className="text-xs opacity-75 mt-2">${topClientes[0]?.compras_totales.toFixed(2) || '0.00'} gastado</p>
+          </div>
+
+          <div className="bg-indigo-600 text-white rounded-lg shadow-lg border-l-4 border-indigo-400 p-6">
+            <p className="text-sm mb-2 opacity-90">Ingresos de Clientes</p>
+            <p className="text-4xl font-bold">${topClientes.reduce((sum, c) => sum + c.compras_totales, 0).toFixed(2)}</p>
+            <p className="text-xs opacity-75 mt-2">Top 5 clientes</p>
+          </div>
+        </div>
+
         {/* Platillos Top */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
@@ -217,12 +254,31 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+
+          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
+            <h2 className="text-2xl font-oswald text-salsa mb-4">👥 Top Clientes</h2>
+            {topClientes.length > 0 ? (
+              <div className="space-y-3">
+                {topClientes.map((cliente, idx) => (
+                  <div key={idx} className="flex justify-between items-center p-3 bg-nixtamal rounded-lg">
+                    <div>
+                      <p className="font-semibold text-carbon">{idx + 1}. {cliente.nombre}</p>
+                      <p className="text-sm text-gray-600">{cliente.puntos} puntos</p>
+                    </div>
+                    <p className="font-bold text-salsa">${cliente.compras_totales.toFixed(2)}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600">Sin clientes registrados</p>
+            )}
+          </div>
         </div>
 
         {/* Accesos Rápidos */}
         <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
           <h2 className="text-2xl font-oswald text-salsa mb-4">⚡ Accesos Rápidos</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <a
               href="#/bitacoras"
               className="p-4 bg-salsa text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition"
@@ -234,6 +290,9 @@ export default function DashboardPage() {
             </a>
             <a href="#/proveedores" className="p-4 bg-guajillo text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition">
               🏪 Proveedores
+            </a>
+            <a href="#/clientes" className="p-4 bg-pink-600 text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition">
+              👥 Clientes
             </a>
             <a href="#/reportes" className="p-4 bg-purple-600 text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition">
               📈 Reportes
