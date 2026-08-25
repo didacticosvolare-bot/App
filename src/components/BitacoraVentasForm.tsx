@@ -7,22 +7,31 @@ interface Platillo {
   precio_venta: number
 }
 
+interface Cliente {
+  id: string
+  nombre: string
+  puntos: number
+}
+
 interface Props {
   onClose: () => void
 }
 
 export default function BitacoraVentasForm({ onClose }: Props) {
   const [platillos, setPlatillos] = useState<Platillo[]>([])
+  const [clientes, setClientes] = useState<Cliente[]>([])
   const [platilloSeleccionado, setPlatilloSeleccionado] = useState('')
   const [cantidad, setCantidad] = useState('')
   const [precioVenta, setPrecioVenta] = useState('')
-  const [cliente, setCliente] = useState('')
+  const [clienteSeleccionado, setClienteSeleccionado] = useState('')
+  const [clienteTexto, setClienteTexto] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
   useEffect(() => {
     fetchPlatillos()
+    fetchClientes()
   }, [])
 
   async function fetchPlatillos() {
@@ -31,8 +40,21 @@ export default function BitacoraVentasForm({ onClose }: Props) {
       .select('id, nombre_platillo, precio_venta')
       .eq('disponible', true)
       .order('nombre_platillo')
+      .timeout(5000)
     if (data) {
       setPlatillos(data)
+    }
+  }
+
+  async function fetchClientes() {
+    const { data } = await supabase
+      .from('clientes')
+      .select('id, nombre, puntos')
+      .eq('estado', 'activo')
+      .order('nombre')
+      .timeout(5000)
+    if (data) {
+      setClientes(data)
     }
   }
 
@@ -50,24 +72,59 @@ export default function BitacoraVentasForm({ onClose }: Props) {
       return
     }
 
+    const total = parseInt(cantidad) * parseFloat(precioVenta)
+    const puntos = Math.floor(total)
+
     try {
-      const { error: insertError } = await supabase.from('bitacora_ventas_detalle').insert([
-        {
-          platillo_id: platilloSeleccionado,
-          cantidad: parseInt(cantidad),
-          precio_unitario: parseFloat(precioVenta),
-          cliente: cliente.trim() || null,
-          created_at: new Date().toISOString(),
-        },
-      ])
+      const ventaData = {
+        platillo_id: platilloSeleccionado,
+        cantidad: parseInt(cantidad),
+        precio_unitario: parseFloat(precioVenta),
+        cliente: clienteTexto.trim() || null,
+        cliente_id: clienteSeleccionado || null,
+        created_at: new Date().toISOString(),
+      }
+
+      const { error: insertError } = await supabase
+        .from('bitacora_ventas_detalle')
+        .insert([ventaData])
+        .timeout(5000)
 
       if (insertError) throw insertError
 
-      const total = parseInt(cantidad) * parseFloat(precioVenta)
-      setSuccess(`✅ Venta registrada: ${cantidad}x ${platilloSeleccion?.nombre_platillo} = $${total.toFixed(2)}`)
+      if (clienteSeleccionado) {
+        const { data: clienteData } = await supabase
+          .from('clientes')
+          .select('puntos, compras_totales')
+          .eq('id', clienteSeleccionado)
+          .single()
+          .timeout(5000)
+
+        if (clienteData) {
+          const { error: updateError } = await supabase
+            .from('clientes')
+            .update({
+              puntos: clienteData.puntos + puntos,
+              compras_totales: clienteData.compras_totales + total,
+            })
+            .eq('id', clienteSeleccionado)
+            .timeout(5000)
+
+          if (updateError) {
+            console.error('Error updating client points:', updateError)
+          }
+        }
+      }
+
+      setSuccess(
+        `✅ Venta registrada: ${cantidad}x ${platilloSeleccion?.nombre_platillo} = $${total.toFixed(2)}${
+          clienteSeleccionado ? ` (+${puntos} puntos)` : ''
+        }`
+      )
       setCantidad('')
       setPrecioVenta('')
-      setCliente('')
+      setClienteTexto('')
+      setClienteSeleccionado('')
       setPlatilloSeleccionado('')
 
       setTimeout(() => {
@@ -136,12 +193,28 @@ export default function BitacoraVentasForm({ onClose }: Props) {
         </div>
 
         <div>
-          <label className="block font-semibold text-carbon mb-2">Cliente (Opcional)</label>
+          <label className="block font-semibold text-carbon mb-2">Cliente Registrado (Opcional - Acumula Puntos)</label>
+          <select
+            value={clienteSeleccionado}
+            onChange={(e) => setClienteSeleccionado(e.target.value)}
+            className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
+          >
+            <option value="">Seleccionar cliente registrado...</option>
+            {clientes.map((cli) => (
+              <option key={cli.id} value={cli.id}>
+                {cli.nombre} ({cli.puntos} pts)
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-semibold text-carbon mb-2">Nombre para Venta Rápida (sin registro)</label>
           <input
             type="text"
-            value={cliente}
-            onChange={(e) => setCliente(e.target.value)}
-            placeholder="Nombre del cliente"
+            value={clienteTexto}
+            onChange={(e) => setClienteTexto(e.target.value)}
+            placeholder="Nombre del cliente (opcional)"
             className="w-full px-4 py-2 border-2 border-carbon rounded-lg focus:outline-none focus:border-salsa"
           />
         </div>
