@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-nixtamal text-carbon font-worksans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-oswald uppercase tracking-wide;
+  }
+
+  /* Números y precios en monoespaciada */
+  .price, .number {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  /* Tarjeta de costo con esquina doblada */
+  .cost-card {
+    @apply bg-white border-2 border-salsa rounded-lg p-4 relative;
+  }
+
+  .cost-card::after {
+    content: '';
+    @apply absolute -top-1 -right-1 w-6 h-6 bg-totopo transform rotate-45 origin-top-right;
+  }
+
+  /* Botones */
+  .btn-primary {
+    @apply px-4 py-2 bg-salsa text-white font-semibold rounded hover:bg-opacity-90 transition;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-guajillo text-white font-semibold rounded hover:bg-opacity-90 transition;
+  }
+
+  .btn-small {
+    @apply px-2 py-1 text-sm rounded transition;
+  }
+}
