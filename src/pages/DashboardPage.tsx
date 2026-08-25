@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/authContext'
 import InventoryAlerts from '../components/InventoryAlerts'
+import { MetricCard, Card, CardHeader, CardTitle, CardContent, Button, Badge } from '../components/base'
 
 interface DashboardMetrics {
   ventasHoy: number
@@ -162,147 +163,186 @@ export default function DashboardPage() {
 
         {/* KPIs Principales */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow-lg border-l-4 border-salsa p-6">
-            <p className="text-sm text-gray-600 mb-2">Ventas Hoy</p>
-            <p className="text-4xl font-bold text-salsa">${metrics.ventasHoy.toFixed(2)}</p>
-            <p className="text-xs text-gray-500 mt-2">Ingresos del día</p>
-          </div>
+          <MetricCard
+            title="Ventas Hoy"
+            value={`$${metrics.ventasHoy.toFixed(2)}`}
+            subtitle="Ingresos del día"
+            color="primary"
+            icon="💰"
+          />
 
-          <div className="bg-white rounded-lg shadow-lg border-l-4 border-totopo p-6">
-            <p className="text-sm text-gray-600 mb-2">Ventas Mes</p>
-            <p className="text-4xl font-bold text-totopo">${metrics.ventasMes.toFixed(2)}</p>
-            <p className="text-xs text-gray-500 mt-2">Total acumulado</p>
-          </div>
+          <MetricCard
+            title="Ventas Mes"
+            value={`$${metrics.ventasMes.toFixed(2)}`}
+            subtitle="Total acumulado"
+            color="secondary"
+            icon="📊"
+          />
 
-          <div
-            className={`bg-white rounded-lg shadow-lg border-l-4 ${
-              metrics.utilidadMes >= 0 ? 'border-green-500' : 'border-red-500'
-            } p-6`}
-          >
-            <p className="text-sm text-gray-600 mb-2">Utilidad Mes</p>
-            <p className={`text-4xl font-bold ${metrics.utilidadMes >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              ${metrics.utilidadMes.toFixed(2)}
-            </p>
-            <p className="text-xs text-gray-500 mt-2">Ganancia neta</p>
-          </div>
+          <MetricCard
+            title="Utilidad Mes"
+            value={`$${metrics.utilidadMes.toFixed(2)}`}
+            subtitle="Ganancia neta"
+            color={metrics.utilidadMes >= 0 ? 'success' : 'error'}
+            icon={metrics.utilidadMes >= 0 ? '✅' : '⚠️'}
+            trend={{
+              value: metrics.utilidadMes >= 0 ? 12 : -8,
+              isPositive: metrics.utilidadMes >= 0,
+            }}
+          />
 
-          <div className="bg-white rounded-lg shadow-lg border-l-4 border-guajillo p-6">
-            <p className="text-sm text-gray-600 mb-2">Margen</p>
-            <p className="text-4xl font-bold text-guajillo">
-              {metrics.ventasMes > 0 ? ((metrics.utilidadMes / metrics.ventasMes) * 100).toFixed(1) : 0}%
-            </p>
-            <p className="text-xs text-gray-500 mt-2">Rentabilidad</p>
-          </div>
+          <MetricCard
+            title="Margen"
+            value={`${metrics.ventasMes > 0 ? ((metrics.utilidadMes / metrics.ventasMes) * 100).toFixed(1) : 0}%`}
+            subtitle="Rentabilidad"
+            color="warning"
+            icon="📈"
+          />
         </div>
 
         {/* KPI Clientes */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-purple-600 text-white rounded-lg shadow-lg border-l-4 border-purple-400 p-6">
-            <p className="text-sm mb-2 opacity-90">Puntos en Circulación</p>
-            <p className="text-4xl font-bold">{topClientes.reduce((sum, c) => sum + c.puntos, 0)}</p>
-            <p className="text-xs opacity-75 mt-2">Programa de lealtad activo</p>
-          </div>
+          <MetricCard
+            title="Puntos en Circulación"
+            value={topClientes.reduce((sum, c) => sum + c.puntos, 0)}
+            subtitle="Programa de lealtad activo"
+            color="primary"
+            icon="🎁"
+          />
 
-          <div className="bg-pink-600 text-white rounded-lg shadow-lg border-l-4 border-pink-400 p-6">
-            <p className="text-sm mb-2 opacity-90">Cliente Top</p>
-            <p className="text-2xl font-bold">{topClientes[0]?.nombre || '-'}</p>
-            <p className="text-xs opacity-75 mt-2">${topClientes[0]?.compras_totales.toFixed(2) || '0.00'} gastado</p>
-          </div>
+          <MetricCard
+            title="Cliente Top"
+            value={topClientes[0]?.nombre || '-'}
+            subtitle={`$${topClientes[0]?.compras_totales.toFixed(2) || '0.00'} gastado`}
+            color="secondary"
+            icon="👤"
+          />
 
-          <div className="bg-indigo-600 text-white rounded-lg shadow-lg border-l-4 border-indigo-400 p-6">
-            <p className="text-sm mb-2 opacity-90">Ingresos de Clientes</p>
-            <p className="text-4xl font-bold">${topClientes.reduce((sum, c) => sum + c.compras_totales, 0).toFixed(2)}</p>
-            <p className="text-xs opacity-75 mt-2">Top 5 clientes</p>
-          </div>
+          <MetricCard
+            title="Ingresos de Clientes"
+            value={`$${topClientes.reduce((sum, c) => sum + c.compras_totales, 0).toFixed(2)}`}
+            subtitle="Top 5 clientes"
+            color="success"
+            icon="💵"
+          />
         </div>
 
         {/* Platillos Top */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-            <h2 className="text-2xl font-oswald text-salsa mb-4">🔥 Top Platillos (Mes)</h2>
-            {topPlatillos.length > 0 ? (
-              <div className="space-y-3">
-                {topPlatillos.map((plat, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-3 bg-nixtamal rounded-lg">
-                    <div>
-                      <p className="font-semibold text-carbon">{idx + 1}. {plat.nombre}</p>
-                      <p className="text-sm text-gray-600">{plat.cantidad} unidades</p>
+          <Card variant="elevated">
+            <CardHeader>
+              <CardTitle>🔥 Top Platillos (Mes)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {topPlatillos.length > 0 ? (
+                <div className="space-y-3">
+                  {topPlatillos.map((plat, idx) => (
+                    <div key={idx} className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <div>
+                        <p className="font-semibold text-neutral-900">{idx + 1}. {plat.nombre}</p>
+                        <p className="text-sm text-neutral-500">{plat.cantidad} unidades</p>
+                      </div>
+                      <Badge variant="primary" size="md">
+                        ${plat.ingreso.toFixed(2)}
+                      </Badge>
                     </div>
-                    <p className="font-bold text-salsa">${plat.ingreso.toFixed(2)}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-600">Sin ventas este mes</p>
-            )}
-          </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-neutral-500">Sin ventas este mes</p>
+              )}
+            </CardContent>
+          </Card>
 
-          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-            <h2 className="text-2xl font-oswald text-salsa mb-4">📊 Resumen Rápido</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-                <span className="text-carbon font-semibold">Promedio Diario</span>
-                <span className="font-bold text-blue-600">
-                  ${(metrics.ventasMes / new Date().getDate()).toFixed(2)}
-                </span>
+          <Card variant="elevated">
+            <CardHeader>
+              <CardTitle>📊 Resumen Rápido</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-3 bg-secondary-50 rounded-lg border-l-4 border-secondary-400">
+                  <span className="font-semibold text-neutral-700">Promedio Diario</span>
+                  <span className="font-bold text-secondary-600">
+                    ${(metrics.ventasMes / new Date().getDate()).toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-primary-50 rounded-lg border-l-4 border-primary-400">
+                  <span className="font-semibold text-neutral-700">Unidades Vendidas</span>
+                  <span className="font-bold text-primary-600">
+                    {topPlatillos.reduce((sum, p) => sum + p.cantidad, 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-success-50 rounded-lg border-l-4 border-success-400">
+                  <span className="font-semibold text-neutral-700">Mejor Día</span>
+                  <a href="#/reportes" className="font-bold text-success-600 hover:underline">
+                    Consultar Reportes
+                  </a>
+                </div>
               </div>
-              <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border-l-4 border-purple-400">
-                <span className="text-carbon font-semibold">Unidades Vendidas</span>
-                <span className="font-bold text-purple-600">
-                  {topPlatillos.reduce((sum, p) => sum + p.cantidad, 0)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
-                <span className="text-carbon font-semibold">Mejor Día</span>
-                <span className="font-bold text-green-600">Consultar Reportes</span>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-            <h2 className="text-2xl font-oswald text-salsa mb-4">👥 Top Clientes</h2>
-            {topClientes.length > 0 ? (
-              <div className="space-y-3">
-                {topClientes.map((cliente, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-3 bg-nixtamal rounded-lg">
-                    <div>
-                      <p className="font-semibold text-carbon">{idx + 1}. {cliente.nombre}</p>
-                      <p className="text-sm text-gray-600">{cliente.puntos} puntos</p>
+          <Card variant="elevated" className="md:col-span-2">
+            <CardHeader>
+              <CardTitle>👥 Top Clientes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {topClientes.length > 0 ? (
+                <div className="space-y-3">
+                  {topClientes.map((cliente, idx) => (
+                    <div key={idx} className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <div>
+                        <p className="font-semibold text-neutral-900">{idx + 1}. {cliente.nombre}</p>
+                        <p className="text-sm text-neutral-500">{cliente.puntos} puntos</p>
+                      </div>
+                      <Badge variant="secondary" size="md">
+                        ${cliente.compras_totales.toFixed(2)}
+                      </Badge>
                     </div>
-                    <p className="font-bold text-salsa">${cliente.compras_totales.toFixed(2)}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-600">Sin clientes registrados</p>
-            )}
-          </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-neutral-500">Sin clientes registrados</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Accesos Rápidos */}
-        <div className="bg-white rounded-lg shadow-lg border-2 border-salsa p-6">
-          <h2 className="text-2xl font-oswald text-salsa mb-4">⚡ Accesos Rápidos</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <a
-              href="#/bitacoras"
-              className="p-4 bg-salsa text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition"
-            >
-              📊 Registrar Venta
-            </a>
-            <a href="#/ingredientes" className="p-4 bg-totopo text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition">
-              🥕 Ingredientes
-            </a>
-            <a href="#/proveedores" className="p-4 bg-guajillo text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition">
-              🏪 Proveedores
-            </a>
-            <a href="#/clientes" className="p-4 bg-pink-600 text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition">
-              👥 Clientes
-            </a>
-            <a href="#/reportes" className="p-4 bg-purple-600 text-white rounded-lg text-center font-semibold hover:bg-opacity-90 transition">
-              📈 Reportes
-            </a>
-          </div>
-        </div>
+        <Card variant="elevated">
+          <CardHeader>
+            <CardTitle>⚡ Accesos Rápidos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <a href="#/bitacoras" className="no-underline">
+                <Button variant="primary" fullWidth size="lg" className="text-center">
+                  📊 Venta
+                </Button>
+              </a>
+              <a href="#/ingredientes" className="no-underline">
+                <Button variant="warning" fullWidth size="lg" className="text-center">
+                  🥕 Ingredientes
+                </Button>
+              </a>
+              <a href="#/proveedores" className="no-underline">
+                <Button variant="secondary" fullWidth size="lg" className="text-center">
+                  🏪 Proveedores
+                </Button>
+              </a>
+              <a href="#/clientes" className="no-underline">
+                <Button variant="success" fullWidth size="lg" className="text-center">
+                  👥 Clientes
+                </Button>
+              </a>
+              <a href="#/reportes" className="no-underline">
+                <Button variant="error" fullWidth size="lg" className="text-center">
+                  📈 Reportes
+                </Button>
+              </a>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
