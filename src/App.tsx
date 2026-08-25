@@ -5,7 +5,7 @@ import ProveedoresPage from './pages/ProveedoresPage'
 import EmpaquesPage from './pages/EmpaquesPage'
 import SubrecetasPage from './pages/SubrecetasPage'
 import PlatillosPage from './pages/PlatillosPage'
-import BitacorasPage from './pages/BitacorasPage'
+import BitacorasOperacionalPage from './pages/BitacorasOperacionalPage'
 import EquipoPage from './pages/EquipoPage'
 
 export default function App() {
@@ -24,7 +24,7 @@ export default function App() {
       case 'platillos':
         return <PlatillosPage />
       case 'bitacoras':
-        return <BitacorasPage />
+        return <BitacorasOperacionalPage />
       case 'equipo':
         return <EquipoPage />
       default:
