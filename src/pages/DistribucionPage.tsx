@@ -27,7 +27,6 @@ export default function DistribucionPage() {
       const { data } = await supabase
         .from('vw_distribucion_mensual')
         .select('*')
-        .timeout(5000)
 
       setDistribuciones(data || [])
     } catch (err) {
@@ -44,26 +43,22 @@ export default function DistribucionPage() {
         .from('bitacora_ventas_detalle')
         .select('cantidad, precio_unitario')
         .ilike('created_at', `${mesSeleccionado}%`)
-        .timeout(5000)
 
       const { data: gastosData } = await supabase
         .from('bitacora_gastos')
         .select('monto')
         .ilike('created_at', `${mesSeleccionado}%`)
-        .timeout(5000)
-
+        
       const { data: comprasData } = await supabase
         .from('bitacora_compras')
         .select('cantidad, precio_unitario')
         .ilike('created_at', `${mesSeleccionado}%`)
-        .timeout(5000)
-
+        
       const { data: nominaData } = await supabase
         .from('nómina')
         .select('salario_base')
         .ilike('mes', `${mesSeleccionado}%`)
-        .timeout(5000)
-
+        
       const totalVentas = ventasData?.reduce((sum, v) => sum + v.cantidad * v.precio_unitario, 0) || 0
       const totalGastos = gastosData?.reduce((sum, g) => sum + g.monto, 0) || 0
       const totalCompras = comprasData?.reduce((sum, c) => sum + c.cantidad * c.precio_unitario, 0) || 0
@@ -96,8 +91,7 @@ export default function DistribucionPage() {
             updated_at: new Date().toISOString(),
           })
           .eq('mes', mesSeleccionado)
-          .timeout(5000)
-      } else {
+                } else {
         // Insert new
         await supabase
           .from('distribucion_ganancias')
@@ -112,8 +106,7 @@ export default function DistribucionPage() {
               erick_ganancia: porSocio,
             },
           ])
-          .timeout(5000)
-      }
+                }
 
       fetchDistribuciones()
     } catch (err) {

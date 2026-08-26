@@ -39,7 +39,7 @@ export default function EmpaquesPage() {
         query = query.ilike('tipo_empaque', `%${filterTipo}%`)
       }
 
-      const { data, error: dbError } = await query.timeout(5000)
+      const { data, error: dbError } = await query
 
       if (dbError) {
         console.error('Error:', dbError)

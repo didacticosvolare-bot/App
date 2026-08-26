@@ -38,7 +38,7 @@ export default function NominaPage() {
         query = query.ilike('mes', `${filterMes}%`)
       }
 
-      const { data, error: dbError } = await query.timeout(5000)
+      const { data, error: dbError } = await query
 
       if (dbError) {
         console.error('Error:', dbError)

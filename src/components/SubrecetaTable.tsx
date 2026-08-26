@@ -33,8 +33,7 @@ export default function SubrecetaTable({ subrecetas, onEdit, onDelete }: Props) 
       const { data, error } = await supabase
         .from('subreceta_detalle')
         .select('subreceta_id, ingrediente, cantidad, unidad')
-        .timeout(5000)
-
+        
       if (!error && data) {
         const grouped: { [key: string]: SubrecetaDetalle[] } = {}
         data.forEach((detail) => {

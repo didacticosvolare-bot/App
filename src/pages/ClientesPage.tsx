@@ -33,8 +33,7 @@ export default function ClientesPage() {
         .from('clientes')
         .select('*')
         .order('created_at', { ascending: false })
-        .timeout(5000)
-
+        
       if (error) throw error
       setClientes(data || [])
     } catch (err) {
@@ -48,8 +47,7 @@ export default function ClientesPage() {
     if (!window.confirm('¿Eliminar este cliente?')) return
 
     try {
-      const { error } = await supabase.from('clientes').delete().eq('id', id).timeout(5000)
-      if (error) throw error
+      const { error } = await supabase.from('clientes').delete().eq('id', id)      if (error) throw error
       setClientes(clientes.filter((c) => c.id !== id))
     } catch (err) {
       console.error('Error deleting cliente:', err)

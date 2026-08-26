@@ -40,8 +40,7 @@ export default function BitacoraVentasForm({ onClose }: Props) {
       .select('id, nombre_platillo, precio_venta')
       .eq('disponible', true)
       .order('nombre_platillo')
-      .timeout(5000)
-    if (data) {
+          if (data) {
       setPlatillos(data)
     }
   }
@@ -52,8 +51,7 @@ export default function BitacoraVentasForm({ onClose }: Props) {
       .select('id, nombre, puntos')
       .eq('estado', 'activo')
       .order('nombre')
-      .timeout(5000)
-    if (data) {
+          if (data) {
       setClientes(data)
     }
   }
@@ -88,8 +86,7 @@ export default function BitacoraVentasForm({ onClose }: Props) {
       const { error: insertError } = await supabase
         .from('bitacora_ventas_detalle')
         .insert([ventaData])
-        .timeout(5000)
-
+        
       if (insertError) throw insertError
 
       if (clienteSeleccionado) {
@@ -98,8 +95,7 @@ export default function BitacoraVentasForm({ onClose }: Props) {
           .select('puntos, compras_totales')
           .eq('id', clienteSeleccionado)
           .single()
-          .timeout(5000)
-
+          
         if (clienteData) {
           const { error: updateError } = await supabase
             .from('clientes')
@@ -108,8 +104,7 @@ export default function BitacoraVentasForm({ onClose }: Props) {
               compras_totales: clienteData.compras_totales + total,
             })
             .eq('id', clienteSeleccionado)
-            .timeout(5000)
-
+            
           if (updateError) {
             console.error('Error updating client points:', updateError)
           }

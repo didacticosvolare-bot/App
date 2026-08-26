@@ -36,7 +36,6 @@ export default function BitacorasPage() {
         .from('bitacora_compras')
         .select('*')
         .order('created_at', { ascending: false })
-        .timeout(5000)
 
       if (dbError) {
         console.error('Error:', dbError)

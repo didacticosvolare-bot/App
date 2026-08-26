@@ -35,7 +35,7 @@ export default function SubrecetasPage() {
         query = query.ilike('nombre_subreceta', `%${filterNombre}%`)
       }
 
-      const { data, error: dbError } = await query.timeout(5000)
+      const { data, error: dbError } = await query
 
       if (dbError) {
         console.error('Error:', dbError)

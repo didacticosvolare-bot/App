@@ -43,7 +43,7 @@ export default function ProveedoresPage() {
         query = query.ilike('producto', `%${filterProducto}%`)
       }
 
-      const { data, error: dbError } = await query.timeout(5000)
+      const { data, error: dbError } = await query
 
       if (dbError) {
         console.error('Error:', dbError)

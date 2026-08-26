@@ -40,7 +40,7 @@ export default function PromocionesPage() {
   async function fetchCupones() {
     setLoading(true)
     try {
-      const { data } = await supabase.from('cupones').select('*').order('created_at', { ascending: false }).timeout(5000)
+      const { data } = await supabase.from('cupones').select('*').order('created_at', { ascending: false })
 
       setCupones(data || [])
     } catch (err) {
@@ -71,8 +71,7 @@ export default function PromocionesPage() {
             fecha_fin: formData.fecha_fin,
           })
           .eq('id', editingId)
-          .timeout(5000)
-
+          
         if (error) throw error
       } else {
         const { error } = await supabase
@@ -90,8 +89,7 @@ export default function PromocionesPage() {
               activo: true,
             },
           ])
-          .timeout(5000)
-
+          
         if (error) throw error
       }
 
@@ -120,8 +118,7 @@ export default function PromocionesPage() {
         .from('cupones')
         .update({ activo: !activo })
         .eq('id', id)
-        .timeout(5000)
-
+        
       if (error) throw error
       fetchCupones()
     } catch (err) {
@@ -133,8 +130,7 @@ export default function PromocionesPage() {
     if (!window.confirm('¿Eliminar este cupón?')) return
 
     try {
-      const { error } = await supabase.from('cupones').delete().eq('id', id).timeout(5000)
-
+      const { error } = await supabase.from('cupones').delete().eq('id', id)
       if (error) throw error
       fetchCupones()
     } catch (err) {

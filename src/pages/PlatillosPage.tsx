@@ -38,7 +38,7 @@ export default function PlatillosPage() {
         query = query.ilike('nombre_platillo', `%${filterNombre}%`)
       }
 
-      const { data, error: dbError } = await query.timeout(5000)
+      const { data, error: dbError } = await query
 
       if (dbError) {
         console.error('Error:', dbError)

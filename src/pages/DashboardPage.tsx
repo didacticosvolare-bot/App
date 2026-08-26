@@ -48,8 +48,7 @@ export default function DashboardPage() {
         .from('bitacora_ventas_detalle')
         .select('cantidad, precio_unitario')
         .ilike('created_at', `${hoy}%`)
-        .timeout(5000)
-
+        
       const ventasHoy = ventasHoyData?.reduce((sum, v) => sum + v.cantidad * v.precio_unitario, 0) || 0
 
       // Ventas mes
@@ -57,8 +56,7 @@ export default function DashboardPage() {
         .from('bitacora_ventas_detalle')
         .select('cantidad, precio_unitario, platillo_id')
         .ilike('created_at', `${mesActual}%`)
-        .timeout(5000)
-
+        
       const ventasMes = ventasMesData?.reduce((sum, v) => sum + v.cantidad * v.precio_unitario, 0) || 0
 
       // Top Platillos
@@ -76,24 +74,21 @@ export default function DashboardPage() {
         .from('bitacora_gastos')
         .select('monto')
         .ilike('created_at', `${mesActual}%`)
-        .timeout(5000)
-
+        
       const gastosMes = gastosData?.reduce((sum, g) => sum + g.monto, 0) || 0
 
       const { data: comprasData } = await supabase
         .from('bitacora_compras')
         .select('cantidad, precio_unitario')
         .ilike('created_at', `${mesActual}%`)
-        .timeout(5000)
-
+        
       const comprasMes = comprasData?.reduce((sum, c) => sum + c.cantidad * c.precio_unitario, 0) || 0
 
       const { data: nominaData } = await supabase
         .from('nómina')
         .select('salario_base')
         .ilike('mes', `${mesActual}%`)
-        .timeout(5000)
-
+        
       const nominaMes = nominaData?.reduce((sum, n) => sum + n.salario_base, 0) || 0
 
       const utilidadMes = ventasMes - gastosMes - comprasMes - nominaMes
@@ -102,8 +97,7 @@ export default function DashboardPage() {
       const { data: platillosData } = await supabase
         .from('platillos')
         .select('id, nombre_platillo')
-        .timeout(5000)
-
+        
       const platillosDataMap = new Map(platillosData?.map((p) => [p.id, p.nombre_platillo]) || [])
 
       const topPlatillosArray = Object.entries(platillosMap)
@@ -121,8 +115,7 @@ export default function DashboardPage() {
         .select('nombre, compras_totales, puntos')
         .order('compras_totales', { ascending: false })
         .limit(5)
-        .timeout(5000)
-
+        
       setTopPlatillos(topPlatillosArray)
       setTopClientes(clientesData || [])
       setMetrics({

@@ -29,7 +29,6 @@ export default function ClienteForm({ editingId, onClose }: Props) {
       .select('*')
       .eq('id', editingId)
       .single()
-      .timeout(5000)
 
     if (fetchError) {
       console.error('Error:', fetchError)
@@ -69,14 +68,12 @@ export default function ClienteForm({ editingId, onClose }: Props) {
           .from('clientes')
           .update(clienteData)
           .eq('id', editingId)
-          .timeout(5000)
 
         if (updateError) throw updateError
       } else {
         const { error: insertError } = await supabase
           .from('clientes')
           .insert([clienteData])
-          .timeout(5000)
 
         if (insertError) throw insertError
       }

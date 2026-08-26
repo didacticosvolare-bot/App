@@ -49,7 +49,6 @@ export default function ReportesPage() {
         .from('bitacora_ventas_detalle')
         .select('cantidad, precio_unitario, platillo_id')
         .ilike('created_at', `${filterMes}%`)
-        .timeout(5000)
 
       if (ventasData) {
         const totalVentas = ventasData.reduce((sum, v) => sum + v.cantidad * v.precio_unitario, 0)
@@ -86,7 +85,6 @@ export default function ReportesPage() {
         .from('bitacora_gastos')
         .select('monto')
         .ilike('created_at', `${filterMes}%`)
-        .timeout(5000)
 
       if (gastosData) {
         const total = gastosData.reduce((sum, g) => sum + g.monto, 0)
@@ -98,7 +96,6 @@ export default function ReportesPage() {
         .from('bitacora_compras')
         .select('cantidad, precio_unitario')
         .ilike('created_at', `${filterMes}%`)
-        .timeout(5000)
 
       if (comprasData) {
         const total = comprasData.reduce((sum, c) => sum + c.cantidad * c.precio_unitario, 0)
@@ -110,7 +107,6 @@ export default function ReportesPage() {
         .from('nómina')
         .select('salario_base')
         .ilike('mes', `${filterMes}%`)
-        .timeout(5000)
 
       if (nominaData) {
         const total = nominaData.reduce((sum, n) => sum + n.salario_base, 0)

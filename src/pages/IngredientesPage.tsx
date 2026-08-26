@@ -30,7 +30,6 @@ export default function IngredientesPage() {
         .from('ingredientes')
         .select('*')
         .order('nombre')
-        .timeout(5000)
 
       if (dbError) {
         console.error('Error al cargar ingredientes:', dbError)

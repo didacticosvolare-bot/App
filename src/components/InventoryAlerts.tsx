@@ -28,13 +28,11 @@ export default function InventoryAlerts({ compact = false }: Props) {
       const { data: baja } = await supabase
         .from('vw_ingredientes_bajos')
         .select('*')
-        .timeout(5000)
-
+        
       const { data: agotados_data } = await supabase
         .from('vw_ingredientes_agotados')
         .select('*')
-        .timeout(5000)
-
+        
       setAlertas(baja || [])
       setAgotados(agotados_data || [])
     } catch (err) {

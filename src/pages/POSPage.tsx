@@ -34,7 +34,6 @@ export default function POSPage() {
       .select('id, nombre_platillo, precio_venta')
       .eq('disponible', true)
       .order('nombre_platillo')
-      .timeout(5000)
 
     if (data) {
       setPlatillos(data)
@@ -98,8 +97,7 @@ export default function POSPage() {
       const { error } = await supabase
         .from('bitacora_ventas_detalle')
         .insert(ventasData)
-        .timeout(5000)
-
+        
       if (error) throw error
 
       alert(`✅ Venta registrada: ${carrito.length} producto(s) = $${total.toFixed(2)}`)

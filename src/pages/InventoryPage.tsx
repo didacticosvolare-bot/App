@@ -31,7 +31,6 @@ export default function InventoryPage() {
         .from('ingredientes')
         .select('*')
         .order('nombre_ingrediente')
-        .timeout(5000)
 
       setIngredientes(data || [])
     } catch (err) {
@@ -47,7 +46,6 @@ export default function InventoryPage() {
         .from('ingredientes')
         .update({ stock_actual: nuevoValor })
         .eq('id', id)
-        .timeout(5000)
 
       if (error) throw error
 
@@ -63,7 +61,6 @@ export default function InventoryPage() {
             realizado_por: 'Admin',
           },
         ])
-        .timeout(5000)
 
       fetchIngredientes()
       setEditandoId(null)
